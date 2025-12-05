@@ -1,0 +1,82 @@
+{
+  "lesson_id": "coffee_shop_001",
+  "title": "At the Coffee Shop",
+  "level": "B2",
+  "lines": [
+    {
+      "id": 1,
+      "speaker": "male_us_1",
+      "text": "Hi, can I get a large latte please?",
+      "emotion": "friendly",
+      "pause_after_ms": 600
+    },
+    {
+      "id": 2,
+      "speaker": "female_us_1",
+      "text": "Sure! Would you like any flavor shots with that?",
+      "emotion": "cheerful",
+      "pause_after_ms": 800
+    },
+    {
+      "id": 3,
+      "speaker": "male_us_1",
+      "text": "Hmm, what flavors do you have?",
+      "emotion": "neutral",
+      "pause_after_ms": 500
+    },
+    {
+      "id": 4,
+      "speaker": "female_us_1",
+      "text": "We have vanilla, caramel, hazelnut, and mocha.",
+      "emotion": "friendly",
+      "pause_after_ms": 600
+    },
+    {
+      "id": 5,
+      "speaker": "male_us_1",
+      "text": "I will take vanilla, please. And can you make it with oat milk?",
+      "emotion": "friendly",
+      "pause_after_ms": 700
+    },
+    {
+      "id": 6,
+      "speaker": "female_us_1",
+      "text": "Absolutely! A large vanilla latte with oat milk. Anything else?",
+      "emotion": "cheerful",
+      "pause_after_ms": 800
+    },
+    {
+      "id": 7,
+      "speaker": "male_us_1",
+      "text": "No, that will be all. How much is it?",
+      "emotion": "neutral",
+      "pause_after_ms": 500
+    },
+    {
+      "id": 8,
+      "speaker": "female_us_1",
+      "text": "That will be six dollars and fifty cents.",
+      "emotion": "friendly",
+      "pause_after_ms": 600
+    },
+    {
+      "id": 9,
+      "speaker": "male_us_1",
+      "text": "Here you go. Keep the change.",
+      "emotion": "friendly",
+      "pause_after_ms": 500
+    },
+    {
+      "id": 10,
+      "speaker": "female_us_1",
+      "text": "Thank you so much! Your drink will be ready in just a moment.",
+      "emotion": "cheerful",
+      "pause_after_ms": 300
+    }
+  ],
+  "settings": {
+    "speech_rate": 1.0,
+    "initial_silence_ms": 500,
+    "default_pause_ms": 400
+  }
+}

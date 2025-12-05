@@ -1,0 +1,32 @@
+tts:
+  model: "xtts_v2"
+  model_path: "./models/xtts_v2"
+  device: "cuda"  # "cuda" or "cpu"
+
+audio:
+  sample_rate: 24000
+  output_format: "mp3"
+  mp3_bitrate: 192
+  normalization_target: -16  # LUFS
+
+synthesis:
+  temperature: 0.7
+  repetition_penalty: 2.0
+  default_pause_ms: 400
+  initial_silence_ms: 300
+
+alignment:
+  enabled: true
+  drift_threshold_ms: 200
+  wer_threshold: 0.10
+
+voice_check:
+  enabled: true
+  similarity_threshold: 0.85
+
+retry:
+  max_attempts: 3
+  fallback_model: "vits"
+
+voices:
+  directory: "./voices"
