@@ -83,18 +83,44 @@ class TTSWorker:
             # Use XTTS v2 multilingual model
             self.model = TTS("tts_models/multilingual/multi-dataset/xtts_v2")
 
-            # Move to specified device
-            if self.tts_config.device == "cuda" and torch.cuda.is_available():
-                self.model = self.model.to("cuda")
-                logger.info("Model loaded on CUDA")
-            else:
-                logger.info("Model loaded on CPU")
+            # Determine best available device
+            device = self._get_device()
+            if device != "cpu":
+                self.model = self.model.to(device)
+            logger.info(f"Model loaded on {device.upper()}")
 
             self._loaded = True
 
         except Exception as e:
             logger.error(f"Failed to load TTS model: {e}")
             raise RuntimeError(f"Failed to load TTS model: {e}")
+
+    def _get_device(self) -> str:
+        """Determine the best available compute device."""
+        requested = self.tts_config.device
+
+        # CUDA (NVIDIA) or ROCm (AMD on Linux)
+        if requested == "cuda":
+            if torch.cuda.is_available():
+                gpu_name = torch.cuda.get_device_name(0)
+                logger.info(f"Using GPU: {gpu_name}")
+                return "cuda"
+            else:
+                logger.warning("CUDA requested but not available, falling back to CPU")
+                return "cpu"
+
+        # MPS (Apple Silicon)
+        elif requested == "mps":
+            if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+                logger.info("Using Apple MPS (Metal Performance Shaders)")
+                return "mps"
+            else:
+                logger.warning("MPS requested but not available, falling back to CPU")
+                return "cpu"
+
+        # CPU
+        else:
+            return "cpu"
 
     def synthesize_line(self, line: ScriptLine) -> SynthesisResult:
         """

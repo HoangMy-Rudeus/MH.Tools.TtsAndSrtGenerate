@@ -43,6 +43,7 @@ voices/
 ```
 
 **Voice sample requirements:**
+
 - Duration: 6-12 seconds
 - Format: WAV, mono, 24kHz recommended
 - Quality: Clean audio, no background noise
@@ -311,21 +312,36 @@ pytest tests/test_validator.py
 ### Common Issues
 
 **"Voice not found" error**
+
 - Ensure voice `.wav` files are in `voices/` directory
 - File names become voice IDs (e.g., `male_us_1.wav` → speaker: `male_us_1`)
 
 **CUDA out of memory**
+
 - Set `device: "cpu"` in config
 - Or use a smaller batch of lines
 
 **Poor audio quality**
+
 - Use clean 6-12s voice reference samples
 - Reduce `temperature` for more consistent output
 - Check `quality_score` in output JSON
 
 **Timestamp drift**
+
 - Enable alignment in config (`alignment.enabled: true`)
 - Check Whisper is installed correctly
+
+## Documentation
+
+| Guide | Description |
+|-------|-------------|
+| [Setup Guide](docs/guides/setup.md) | Complete installation & configuration |
+| [User Guide](docs/guides/user-guide.md) | How to use the tool |
+| [Configuration](docs/guides/configuration.md) | All config options |
+| [API Reference](docs/api/reference.md) | Technical API docs |
+| [Architecture](docs/architecture.md) | System design |
+| [Code Explained](docs/guides/code-explained.md) | Code walkthroughs |
 
 ## License
 

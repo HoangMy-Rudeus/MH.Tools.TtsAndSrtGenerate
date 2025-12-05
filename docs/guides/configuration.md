@@ -75,17 +75,21 @@ The TTS model to use for synthesis.
 Path to model files. Used for custom/local models.
 
 ### `device`
-**Type**: `"cuda"` or `"cpu"`
+**Type**: `"cuda"`, `"cpu"`, or `"mps"`
 **Default**: `"cuda"`
 
 Compute device for model inference.
 
-| Value | Description | Speed |
-|-------|-------------|-------|
-| `cuda` | NVIDIA GPU acceleration | Fast (~2-3s per line) |
-| `cpu` | CPU processing | Slow (~10-15s per line) |
+| Value | Description | Speed | Platform |
+|-------|-------------|-------|----------|
+| `cuda` | NVIDIA GPU (CUDA) or AMD GPU (ROCm) | Fast (~2-3s per line) | Windows/Linux |
+| `mps` | Apple Metal Performance Shaders | Fast (~3-5s per line) | macOS (Apple Silicon) |
+| `cpu` | CPU processing | Slow (~10-15s per line) | All platforms |
 
-**Note**: Falls back to CPU automatically if CUDA is unavailable.
+**Notes**:
+- Falls back to CPU automatically if requested device is unavailable
+- AMD ROCm on Linux uses `"cuda"` device string
+- AMD GPUs on Windows should use `"cpu"`
 
 ---
 

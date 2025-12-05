@@ -10,7 +10,7 @@ class TTSConfig(BaseModel):
     """TTS engine configuration."""
     model: str = Field(default="xtts_v2", description="Model name")
     model_path: str = Field(default="./models/xtts_v2", description="Path to model")
-    device: Literal["cuda", "cpu"] = Field(default="cuda", description="Compute device")
+    device: Literal["cuda", "cpu", "mps"] = Field(default="cuda", description="Compute device (cuda, cpu, mps)")
 
 
 class AudioConfig(BaseModel):
