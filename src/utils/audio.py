@@ -14,6 +14,23 @@ def wav_bytes_to_segment(wav_bytes: bytes) -> AudioSegment:
     return AudioSegment.from_wav(io.BytesIO(wav_bytes))
 
 
+def audio_bytes_to_segment(audio_bytes: bytes) -> AudioSegment:
+    """
+    Convert audio bytes to pydub AudioSegment (auto-detect format).
+
+    Supports WAV and MP3 formats.
+    """
+    # Check for WAV header (RIFF)
+    if audio_bytes[:4] == b'RIFF':
+        return AudioSegment.from_wav(io.BytesIO(audio_bytes))
+    # Check for MP3 header (ID3 or frame sync)
+    elif audio_bytes[:3] == b'ID3' or (audio_bytes[0] == 0xFF and (audio_bytes[1] & 0xE0) == 0xE0):
+        return AudioSegment.from_mp3(io.BytesIO(audio_bytes))
+    else:
+        # Try MP3 as fallback (Edge TTS outputs MP3)
+        return AudioSegment.from_mp3(io.BytesIO(audio_bytes))
+
+
 def segment_to_wav_bytes(segment: AudioSegment) -> bytes:
     """Convert pydub AudioSegment to WAV bytes."""
     buffer = io.BytesIO()

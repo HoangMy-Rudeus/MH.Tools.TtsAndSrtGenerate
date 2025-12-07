@@ -10,6 +10,7 @@ from src.models.script import ScriptInput, Segment, LessonOutput, LessonMetadata
 from src.models.config import AppConfig
 from src.services.validator import ScriptValidator, ValidationResult
 from src.services.tts_worker import TTSWorker, load_voice_registry, SynthesisResult
+from src.services.edge_tts_worker import EdgeTTSWorker
 from src.services.stitcher import AudioStitcher, StitchResult
 from src.services.aligner import AlignmentService, AlignmentResult
 from src.utils.srt import save_srt
@@ -34,18 +35,33 @@ class LessonPipeline:
         """
         self.config = config
 
-        # Load voice registry
+        # Load voice registry (only needed for XTTS)
         self.voice_registry = load_voice_registry(config.voices.directory)
 
         # Initialize services
-        self.validator = ScriptValidator(
-            voice_registry={v: r.reference_path for v, r in self.voice_registry.items()}
-        )
-        self.tts_worker = TTSWorker(
-            tts_config=config.tts,
-            synthesis_config=config.synthesis,
-            voice_registry=self.voice_registry,
-        )
+        # For Edge TTS, skip voice registry validation (uses cloud voices)
+        if config.tts.engine == "edge":
+            self.validator = ScriptValidator(voice_registry=None)
+        else:
+            self.validator = ScriptValidator(
+                voice_registry={v: r.reference_path for v, r in self.voice_registry.items()}
+            )
+
+        # Select TTS engine based on config
+        if config.tts.engine == "edge":
+            logger.info("Using Edge TTS engine (fast cloud-based)")
+            self.tts_worker = EdgeTTSWorker(
+                tts_config=config.tts,
+                synthesis_config=config.synthesis,
+                voice_registry=self.voice_registry,
+            )
+        else:
+            logger.info("Using XTTS engine (local voice cloning)")
+            self.tts_worker = TTSWorker(
+                tts_config=config.tts,
+                synthesis_config=config.synthesis,
+                voice_registry=self.voice_registry,
+            )
         self.stitcher = AudioStitcher(
             audio_config=config.audio,
             synthesis_config=config.synthesis,
@@ -161,7 +177,7 @@ class LessonPipeline:
             duration_ms=stitch_result.total_duration_ms,
             segments=segments,
             metadata=LessonMetadata(
-                model_version=f"{self.config.tts.model}",
+                model_version=f"{self.config.tts.engine}:{self.config.tts.model if self.config.tts.engine == 'xtts' else self.config.tts.edge_voice}",
                 generated_at=datetime.now(timezone.utc).isoformat(),
                 quality_score=self._calculate_quality_score(alignment_result),
             ),

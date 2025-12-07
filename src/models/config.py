@@ -8,9 +8,20 @@ import yaml
 
 class TTSConfig(BaseModel):
     """TTS engine configuration."""
-    model: str = Field(default="xtts_v2", description="Model name")
+    engine: Literal["xtts", "edge"] = Field(default="xtts", description="TTS engine (xtts for local, edge for fast cloud)")
+    model: str = Field(default="xtts_v2", description="Model name (for xtts)")
     model_path: str = Field(default="./models/xtts_v2", description="Path to model")
     device: Literal["cuda", "cpu", "mps"] = Field(default="cuda", description="Compute device (cuda, cpu, mps)")
+    edge_voice: str = Field(default="en-US-AriaNeural", description="Default Edge TTS voice")
+    edge_voices: dict[str, str] = Field(
+        default_factory=lambda: {
+            "female_1": "en-US-AriaNeural",
+            "female_2": "en-US-JennyNeural",
+            "male_1": "en-US-GuyNeural",
+            "male_2": "en-US-ChristopherNeural",
+        },
+        description="Speaker to Edge TTS voice mapping"
+    )
 
 
 class AudioConfig(BaseModel):

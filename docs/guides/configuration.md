@@ -12,9 +12,16 @@ Configuration is stored in YAML format. Default location: `config/default.yaml`
 # config/default.yaml - Complete example with all options
 
 tts:
+  engine: "edge"  # "xtts" or "edge"
   model: "xtts_v2"
   model_path: "./models/xtts_v2"
   device: "cuda"
+  edge_voice: "en-US-AriaNeural"
+  edge_voices:
+    female_us_1: "en-US-AriaNeural"
+    female_us_2: "en-US-JennyNeural"
+    male_us_1: "en-US-GuyNeural"
+    male_us_2: "en-US-ChristopherNeural"
 
 audio:
   sample_rate: 24000
@@ -53,16 +60,34 @@ Controls the text-to-speech engine.
 
 ```yaml
 tts:
+  engine: "edge"
   model: "xtts_v2"
   model_path: "./models/xtts_v2"
   device: "cuda"
+  edge_voice: "en-US-AriaNeural"
+  edge_voices:
+    female_us_1: "en-US-AriaNeural"
+    female_us_2: "en-US-JennyNeural"
+    male_us_1: "en-US-GuyNeural"
+    male_us_2: "en-US-ChristopherNeural"
 ```
+
+### `engine`
+**Type**: `"xtts"` or `"edge"`
+**Default**: `"xtts"`
+
+The TTS engine to use.
+
+| Value | Description | Speed | Use Case |
+|-------|-------------|-------|----------|
+| `edge` | Microsoft Edge TTS (cloud) | Very fast (~0.5s per line) | Quick previews, no GPU needed |
+| `xtts` | Coqui XTTS v2 (local) | Slower (~2-10s per line) | Voice cloning, offline use |
 
 ### `model`
 **Type**: string
 **Default**: `"xtts_v2"`
 
-The TTS model to use for synthesis.
+The TTS model to use for synthesis (XTTS engine only).
 
 | Value | Description |
 |-------|-------------|
@@ -72,13 +97,13 @@ The TTS model to use for synthesis.
 **Type**: string
 **Default**: `"./models/xtts_v2"`
 
-Path to model files. Used for custom/local models.
+Path to model files. Used for custom/local models (XTTS engine only).
 
 ### `device`
 **Type**: `"cuda"`, `"cpu"`, or `"mps"`
 **Default**: `"cuda"`
 
-Compute device for model inference.
+Compute device for model inference (XTTS engine only).
 
 | Value | Description | Speed | Platform |
 |-------|-------------|-------|----------|
@@ -90,6 +115,57 @@ Compute device for model inference.
 - Falls back to CPU automatically if requested device is unavailable
 - AMD ROCm on Linux uses `"cuda"` device string
 - AMD GPUs on Windows should use `"cpu"`
+
+### `edge_voice`
+**Type**: string
+**Default**: `"en-US-AriaNeural"`
+
+Default Edge TTS voice when speaker is not found in `edge_voices` mapping.
+
+### `edge_voices`
+**Type**: dict (speaker → voice)
+**Default**: See below
+
+Maps speaker names in your script to Edge TTS voices.
+
+```yaml
+edge_voices:
+  female_us_1: "en-US-AriaNeural"
+  female_us_2: "en-US-JennyNeural"
+  male_us_1: "en-US-GuyNeural"
+  male_us_2: "en-US-ChristopherNeural"
+  male_uk_1: "en-GB-RyanNeural"
+  female_uk_1: "en-GB-SoniaNeural"
+```
+
+**Built-in voice mappings** (used if not in config):
+
+| Speaker | Edge Voice |
+|---------|------------|
+| `male_us_1` | en-US-GuyNeural |
+| `male_us_2` | en-US-ChristopherNeural |
+| `female_us_1` | en-US-AriaNeural |
+| `female_us_2` | en-US-JennyNeural |
+| `male_uk_1` | en-GB-RyanNeural |
+| `female_uk_1` | en-GB-SoniaNeural |
+
+**List all available voices**:
+```bash
+edge-tts --list-voices
+```
+
+**Popular Edge TTS voices**:
+
+| Voice | Language | Gender | Style |
+|-------|----------|--------|-------|
+| en-US-AriaNeural | English (US) | Female | Friendly, versatile |
+| en-US-JennyNeural | English (US) | Female | Conversational |
+| en-US-GuyNeural | English (US) | Male | Casual, friendly |
+| en-US-ChristopherNeural | English (US) | Male | Professional |
+| en-GB-SoniaNeural | English (UK) | Female | Warm, professional |
+| en-GB-RyanNeural | English (UK) | Male | Friendly |
+| en-AU-NatashaNeural | English (AU) | Female | Natural |
+| en-AU-WilliamNeural | English (AU) | Male | Natural |
 
 ---
 
@@ -396,6 +472,7 @@ pipeline = LessonPipeline(config)
 
 ```yaml
 tts:
+  engine: "xtts"
   device: "cuda"
 
 audio:
@@ -419,18 +496,20 @@ retry:
   max_attempts: 5
 ```
 
-### Fast Preview
+### Fast Preview (Edge TTS)
 
 ```yaml
 tts:
-  device: "cuda"
+  engine: "edge"
+  edge_voices:
+    female_us_1: "en-US-AriaNeural"
+    female_us_2: "en-US-JennyNeural"
+    male_us_1: "en-US-GuyNeural"
+    male_us_2: "en-US-ChristopherNeural"
 
 audio:
   output_format: "mp3"
   mp3_bitrate: 128
-
-synthesis:
-  temperature: 0.7
 
 alignment:
   enabled: false
@@ -442,10 +521,17 @@ retry:
   max_attempts: 1
 ```
 
+**Why Edge TTS for previews?**
+- No GPU required
+- ~20x faster than XTTS
+- Free, no API key needed
+- Good quality for review purposes
+
 ### CPU-Only (No GPU)
 
 ```yaml
 tts:
+  engine: "xtts"
   device: "cpu"
 
 synthesis:

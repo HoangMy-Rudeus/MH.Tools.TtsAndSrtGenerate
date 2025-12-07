@@ -77,6 +77,32 @@ class TTSWorker:
 
         try:
             from TTS.api import TTS
+            import functools
+            import torchaudio
+            import soundfile as sf
+
+            # Patch torchaudio.load to use soundfile (avoids torchcodec/FFmpeg)
+            _original_torchaudio_load = torchaudio.load
+            def _patched_torchaudio_load(filepath, *args, **kwargs):
+                try:
+                    return _original_torchaudio_load(filepath, *args, **kwargs)
+                except Exception:
+                    # Fallback to soundfile
+                    data, samplerate = sf.read(filepath, dtype="float32")
+                    waveform = torch.from_numpy(data).unsqueeze(0)
+                    if waveform.dim() == 2 and waveform.shape[0] > waveform.shape[1]:
+                        waveform = waveform.T
+                    return waveform, samplerate
+            torchaudio.load = _patched_torchaudio_load
+
+            # PyTorch 2.6+ defaults weights_only=True, but XTTS checkpoints
+            # need weights_only=False. Patch torch.load for model loading.
+            _original_load = torch.load
+            @functools.wraps(_original_load)
+            def _patched_load(*args, **kwargs):
+                kwargs.setdefault("weights_only", False)
+                return _original_load(*args, **kwargs)
+            torch.load = _patched_load
 
             logger.info(f"Loading TTS model: {self.tts_config.model}")
 

@@ -10,7 +10,7 @@ from src.models.script import ScriptLine
 from src.models.config import AudioConfig, SynthesisConfig
 from src.services.tts_worker import SynthesisResult
 from src.utils.audio import (
-    wav_bytes_to_segment,
+    audio_bytes_to_segment,
     normalize_audio,
     add_silence,
     trim_silence,
@@ -107,8 +107,8 @@ class AudioStitcher:
                 logger.warning(f"Skipping failed synthesis for line {result.line_id}")
                 continue
 
-            # Convert to AudioSegment
-            segment = wav_bytes_to_segment(result.audio_bytes)
+            # Convert to AudioSegment (auto-detects WAV or MP3)
+            segment = audio_bytes_to_segment(result.audio_bytes)
 
             # Trim silence from edges
             segment = trim_silence(segment)

@@ -1,13 +1,23 @@
 tts:
+  engine: "edge" # "xtts" for local voice cloning, "edge" for fast cloud TTS
   model: "xtts_v2"
   model_path: "./models/xtts_v2"
-  device: "cuda"  # "cuda" or "cpu"
+  device: "cpu" # "cuda" or "cpu" (for xtts only)
+  edge_voice: "en-US-AriaNeural" # Default Edge TTS voice
+  edge_voices:
+    male_us_1: "en-US-GuyNeural"
+    male_us_2: "en-US-ChristopherNeural"
+    female_us_1: "en-US-AriaNeural"
+    female_us_2: "en-US-JennyNeural"
+    # UK English voices
+    male_uk_1: "en-GB-RyanNeural"
+    female_uk_1: "en-GB-SoniaNeural"
 
 audio:
   sample_rate: 24000
   output_format: "mp3"
   mp3_bitrate: 192
-  normalization_target: -16  # LUFS
+  normalization_target: -16 # LUFS
 
 synthesis:
   temperature: 0.7
