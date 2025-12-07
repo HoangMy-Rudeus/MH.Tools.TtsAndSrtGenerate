@@ -1,7 +1,7 @@
 # TTS & SRT Generator Configuration
 
 # TTS Engine: "edge" (cloud, fast) or "kokoro" (local, high quality)
-engine: "edge"
+engine: "kokoro"
 
 # Edge TTS settings (cloud-based)
 edge:
@@ -16,7 +16,7 @@ edge:
 
 # Kokoro-ONNX settings (local)
 kokoro:
-  model_path: "./models/kokoro-v1.0.onnx"
+  model_path: "./models/kokoro-v1.0.fp16.onnx"
   voices_path: "./models/voices-v1.0.bin"
   default_voice: "af_heart"
   voices:

@@ -15,8 +15,8 @@ class KokoroTTSEngine(TTSEngine):
 
     def __init__(
         self,
-        model_path: str = "kokoro-v1.0.onnx",
-        voices_path: str = "voices-v1.0.bin",
+        model_path: str = "./models/kokoro-v1.0.fp16.onnx",
+        voices_path: str = "./models/voices-v1.0.bin",
         custom_voices: Optional[dict[str, str]] = None,
     ):
         """
