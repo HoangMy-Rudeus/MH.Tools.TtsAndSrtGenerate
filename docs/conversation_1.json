@@ -1,0 +1,148 @@
+{
+  "lesson_id": "office_intro_003",
+  "title": "Welcoming a New Team Member and Discussing Projects",
+  "level": "B2",
+  "lines": [
+    {
+      "id": 1,
+      "speaker": "female_us_1",
+      "voice": "en-US-AriaNeural",
+      "text": "Hi everyone, this is Alex, our new front-end developer. Let's give him a warm welcome!",
+      "emotion": "cheerful",
+      "pause_after_ms": 800
+    },
+    {
+      "id": 2,
+      "speaker": "male_us_1",
+      "voice": "en-US-GuyNeural",
+      "text": "Hello Alex, nice to meet you. I'm David, I work on the back-end team.",
+      "emotion": "friendly",
+      "pause_after_ms": 700
+    },
+    {
+      "id": 3,
+      "speaker": "female_us_2",
+      "voice": "en-US-JennyNeural",
+      "text": "Welcome, Alex! I'm Sarah, the project manager. I coordinate tasks and deadlines for the team.",
+      "emotion": "friendly",
+      "pause_after_ms": 900
+    },
+    {
+      "id": 4,
+      "speaker": "male_us_2",
+      "voice": "en-US-ChristopherNeural",
+      "text": "Hi Alex, I'm Tom. I focus on testing and quality assurance. We'll work closely together.",
+      "emotion": "neutral",
+      "pause_after_ms": 600
+    },
+    {
+      "id": 5,
+      "speaker": "male_us_1",
+      "voice": "en-US-GuyNeural",
+      "text": "So Alex, could you tell us a bit about yourself?",
+      "emotion": "serious",
+      "pause_after_ms": 700
+    },
+    {
+      "id": 6,
+      "speaker": "male_us_2",
+      "voice": "en-US-ChristopherNeural",
+      "text": "Sure! I've been building websites for three years, mostly with React and JavaScript. I'm excited to join this team.",
+      "emotion": "excited",
+      "pause_after_ms": 800
+    },
+    {
+      "id": 7,
+      "speaker": "female_us_1",
+      "voice": "en-US-AriaNeural",
+      "text": "That's great! We often use React in our projects, so your skills will be very helpful.",
+      "emotion": "friendly",
+      "pause_after_ms": 600
+    },
+    {
+      "id": 8,
+      "speaker": "female_us_2",
+      "voice": "en-US-JennyNeural",
+      "text": "We usually start the week with a short stand-up meeting. It's a good way to stay aligned.",
+      "emotion": "serious",
+      "pause_after_ms": 700
+    },
+    {
+      "id": 9,
+      "speaker": "male_us_1",
+      "voice": "en-US-GuyNeural",
+      "text": "Actually, we're working on a new e-commerce website right now. It's one of our biggest projects this year.",
+      "emotion": "neutral",
+      "pause_after_ms": 800
+    },
+    {
+      "id": 10,
+      "speaker": "male_us_2",
+      "voice": "en-US-ChristopherNeural",
+      "text": "Yes, the site needs to be fast and mobile-friendly. We're aiming for a modern design.",
+      "emotion": "serious",
+      "pause_after_ms": 700
+    },
+    {
+      "id": 11,
+      "speaker": "female_us_1",
+      "voice": "en-US-AriaNeural",
+      "text": "Alex, you'll start by helping with the product pages. They need some interactive features.",
+      "emotion": "friendly",
+      "pause_after_ms": 600
+    },
+    {
+      "id": 12,
+      "speaker": "male_us_2",
+      "voice": "en-US-ChristopherNeural",
+      "text": "That sounds perfect. I enjoy building interactive components, like image sliders and dynamic menus.",
+      "emotion": "excited",
+      "pause_after_ms": 700
+    },
+    {
+      "id": 13,
+      "speaker": "female_us_2",
+      "voice": "en-US-JennyNeural",
+      "text": "We also use GitHub for version control. Do you feel comfortable with that?",
+      "emotion": "neutral",
+      "pause_after_ms": 600
+    },
+    {
+      "id": 14,
+      "speaker": "male_us_2",
+      "voice": "en-US-ChristopherNeural",
+      "text": "Yes, I've used GitHub in all my previous projects. Collaboration tools are essential.",
+      "emotion": "serious",
+      "pause_after_ms": 700
+    },
+    {
+      "id": 15,
+      "speaker": "male_us_1",
+      "voice": "en-US-GuyNeural",
+      "text": "Great! Later this week, we'll have a design review meeting. It's a good chance to share ideas.",
+      "emotion": "friendly",
+      "pause_after_ms": 800
+    },
+    {
+      "id": 16,
+      "speaker": "female_us_1",
+      "voice": "en-US-AriaNeural",
+      "text": "And don't worry, if you have questions, just ask. We're all here to help.",
+      "emotion": "cheerful",
+      "pause_after_ms": 600
+    },
+    {
+      "id": 17,
+      "speaker": "male_us_2",
+      "voice": "en-US-ChristopherNeural",
+      "text": "Thanks everyone, I already feel welcome. I'm looking forward to working with you!",
+      "emotion": "excited",
+      "pause_after_ms": 800
+    }
+  ],
+  "settings": {
+    "speech_rate": 1.0,
+    "initial_silence_ms": 500,
+    "default_pause_ms": 400
+  }
+}
