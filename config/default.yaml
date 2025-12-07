@@ -1,0 +1,42 @@
+# TTS & SRT Generator Configuration
+
+# TTS Engine: "edge" (cloud, fast) or "kokoro" (local, high quality)
+engine: "edge"
+
+# Edge TTS settings (cloud-based)
+edge:
+  default_voice: "en-US-AriaNeural"
+  voices:
+    female_us_1: "en-US-AriaNeural"
+    female_us_2: "en-US-JennyNeural"
+    male_us_1: "en-US-GuyNeural"
+    male_us_2: "en-US-ChristopherNeural"
+    male_uk_1: "en-GB-RyanNeural"
+    female_uk_1: "en-GB-SoniaNeural"
+
+# Kokoro-ONNX settings (local)
+kokoro:
+  model_path: "./models/kokoro-v1.0.onnx"
+  voices_path: "./models/voices-v1.0.bin"
+  default_voice: "af_heart"
+  voices:
+    female_us_1: "af_heart"
+    female_us_2: "af_bella"
+    female_us_3: "af_nicole"
+    female_us_4: "af_sarah"
+    male_us_1: "am_adam"
+    male_us_2: "am_michael"
+    female_uk_1: "bf_emma"
+    male_uk_1: "bm_george"
+
+# Audio output settings
+audio:
+  sample_rate: 24000
+  normalize_to: -16  # dBFS
+  output_format: "mp3"  # "mp3" or "wav"
+
+# Synthesis settings
+synthesis:
+  default_pause_ms: 400
+  initial_silence_ms: 300
+  max_retries: 3
