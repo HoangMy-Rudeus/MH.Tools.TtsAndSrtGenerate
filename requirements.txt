@@ -1,4 +1,5 @@
 # Core dependencies
+audioop-lts>=0.2.1; python_version >= "3.13"  # audioop compatibility for Python 3.13+
 pydub>=0.25.0          # Audio processing
 pyyaml>=6.0            # Config parsing
 click>=8.0             # CLI framework
