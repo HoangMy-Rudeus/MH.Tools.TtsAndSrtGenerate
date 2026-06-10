@@ -72,3 +72,23 @@ async def test_history_rerun_enqueues_script(tmp_path):
         assert len(app.state.queue) == 1
         # row 0 is newest = "b"
         assert app.state.queue[0].lesson_id == "b"
+
+
+@pytest.mark.asyncio
+async def test_history_play_calls_player(tmp_path):
+    from src.tui.player import FakePlayer
+
+    store = HistoryStore(tmp_path / "history.json")
+    store.append(_record(_write_script(tmp_path, "a"), "a"))
+    player = FakePlayer()
+    app = TtsApp(
+        config=Config(), config_path=tmp_path / "config.yaml",
+        output_dir=tmp_path / "output", runner=FakeRunner(),
+        history_store=store, player=player,
+    )
+    async with app.run_test() as pilot:
+        await pilot.press("h")
+        app.screen.query_one("#history-table").move_cursor(row=0)
+        await pilot.press("p")
+        await pilot.pause()
+        assert player.played == ["output/x.mp3"]
