@@ -2,6 +2,8 @@
 
 A batch Text-to-Speech application that converts conversation scripts into synchronized audio and subtitle files for English learning.
 
+📘 **Full guide:** [docs/USER_MANUAL.md](docs/USER_MANUAL.md) — setup, CLI + console UI usage, writing scripts, configuration, and troubleshooting.
+
 ## Features
 
 - **Multiple TTS Engines**: Support for Edge TTS (cloud, fast, free) and Kokoro-ONNX (local, high quality)

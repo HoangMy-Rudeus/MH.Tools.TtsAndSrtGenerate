@@ -245,10 +245,21 @@ ls test_output/
 Expected output files:
 - `office_intro_003.mp3`
 - `office_intro_003.srt`
+- `office_intro_003_subtitles.json`
 - `office_intro_003_timeline.json`
+
+### Verify the Console UI (TUI)
+
+```bash
+python main.py tui
+```
+
+The interactive UI opens on the Queue screen (`q` to quit). The `textual` dependency is installed
+by `pip install -r requirements.txt`. See the [User Manual](../USER_MANUAL.md#5-console-ui-tui).
 
 ## Next Steps
 
+- [User Manual](../USER_MANUAL.md) - Setup + CLI + console UI in one guide
 - [Getting Started](../tutorials/GETTING_STARTED.md) - First-time setup
 - [Configuration](CONFIGURATION.md) - Customize settings
 - [Custom Voices](CUSTOM_VOICES.md) - Set up voice mappings
