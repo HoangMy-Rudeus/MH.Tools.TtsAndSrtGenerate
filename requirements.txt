@@ -10,3 +10,7 @@ numpy>=1.24.0          # Array operations
 # TTS Engines
 edge-tts>=6.1.0        # Edge TTS (cloud, free)
 # kokoro-onnx>=0.4.0   # Kokoro-ONNX TTS (local) - uncomment if using local TTS
+
+# Dev/test
+pytest>=8.0
+pytest-asyncio>=0.23
