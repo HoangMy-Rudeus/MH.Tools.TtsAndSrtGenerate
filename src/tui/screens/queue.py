@@ -61,6 +61,7 @@ class QueueScreen(Screen):
 
     BINDINGS = [
         ("a", "add_topic", "Add topic"),
+        ("e", "new_script", "Editor"),
         ("d", "remove_topic", "Remove"),
         Binding("r", "run_all", "Run all"),
         # enter also runs, but the focused DataTable claims plain Enter, so use priority
@@ -113,6 +114,11 @@ class QueueScreen(Screen):
                 self.refresh_table()
 
         self.app.push_screen(AddTopicScreen(topics_dir), _on_close)
+
+    def action_new_script(self) -> None:
+        from .editor import EditorScreen
+
+        self.app.push_screen(EditorScreen())
 
     def action_remove_topic(self) -> None:
         table = self.query_one("#queue-table", DataTable)

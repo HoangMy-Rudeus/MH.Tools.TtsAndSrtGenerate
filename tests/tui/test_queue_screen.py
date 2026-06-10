@@ -60,3 +60,11 @@ async def test_run_all_marks_failure_and_continues(tmp_path):
         assert app.state.queue[0].status == QueueStatus.FAILED
         assert app.state.queue[0].error == "network down"
         assert app.state.history.list()[0].success is False
+
+
+@pytest.mark.asyncio
+async def test_queue_opens_editor(tmp_path):
+    app = _make_app(tmp_path, FakeRunner())
+    async with app.run_test() as pilot:
+        await pilot.press("e")
+        assert app.screen.__class__.__name__ == "EditorScreen"

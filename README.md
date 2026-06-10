@@ -88,11 +88,16 @@ python main.py tui -c config/default.yaml -o output/
 Screens:
 
 - **Queue** (home): press `a` to add a topic script (a file picker over `topics/`, validated on
-  select), `d` to remove, `r` to run all queued topics sequentially with a live progress bar.
+  select), `e` to open the script Editor, `d` to remove, `r` to run all queued topics sequentially
+  with a live progress bar.
+- **Editor** (`e`): author a conversation script — set lesson metadata, then `a` add / `e` edit
+  (per-line modal: speaker, text, emotion, pause, speech_rate) / `d` delete / `j`/`k` reorder lines.
+  `s` validates and saves to `topics/<lesson_id>.json`.
 - **Config** (`c`): edit engine, audio params, synthesis params, and the speaker→voice map, then
   save back to the YAML config (`Ctrl+S` or the Save button). Changes apply to the next run.
 - **History** (`h`): browse past runs (newest first); select one to view its input/output paths,
-  press `o` to show the output folder, or `Enter` to re-queue it. `Esc` goes back; `q` quits.
+  press `o` to show the output folder, `p` to replay the audio (`s` to stop), or `Enter` to
+  re-queue it. `Esc` goes back; `q` quits.
 
 > **Note:** generation needs `ffmpeg` on your `PATH` (pydub uses it to stitch/export audio). If it
 > is missing, the app shows a warning on startup and runs will fail at the stitching step.

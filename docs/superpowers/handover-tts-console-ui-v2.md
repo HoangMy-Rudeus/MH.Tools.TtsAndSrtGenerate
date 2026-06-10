@@ -16,14 +16,17 @@
 
 | Task | Title | Status | Commit |
 |------|-------|--------|--------|
-| 1 | `script_io` (serialize + save Script) | TODO (next) | — |
-| 2 | `player` (ffplay wrapper + Fake) | TODO | — |
-| 3 | Wire `player` into AppState + TtsApp | TODO | — |
-| 4 | Audio replay in History screen | TODO | — |
-| 5 | Editor screen + line-form modal | TODO | — |
-| 6 | Queue→Editor binding + verify + README | TODO | — |
+| 1 | `script_io` (serialize + save Script) | DONE | `ada17f3` |
+| 2 | `player` (ffplay wrapper + Fake) | DONE | `51d243d` |
+| 3 | Wire `player` into AppState + TtsApp | DONE | `184ea50` |
+| 4 | Audio replay in History screen | DONE | `44ff39f` |
+| 5 | Editor screen + line-form modal | DONE | `2980db1` |
+| 6 | Queue→Editor binding + verify + README | DONE | (this commit) |
 
 Legend: TODO · IN PROGRESS · DONE · BLOCKED
+
+**v2 COMPLETE.** All 6 tasks done. `python -m pytest -q` → 42 passed.
+Branch `feature/console-ui-v2` ready to merge to `main`.
 
 ## Decisions (locked)
 - Editor editing model: **per-line modal form** (DataTable of lines + add/edit modal).
