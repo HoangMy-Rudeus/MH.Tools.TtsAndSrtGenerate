@@ -13,6 +13,8 @@ from src.engines.edge import list_voices_sync
 from src.models.config import Config
 from src.pipeline import Pipeline
 from src.services.validator import ScriptValidator, ValidationError
+from src.tui.app import TtsApp
+from src.tui.config_io import load_config
 
 
 # Configure logging
@@ -119,6 +121,26 @@ def generate(
     except Exception as e:
         click.echo(click.style(f"Error: {e}", fg="red"))
         sys.exit(1)
+
+
+@cli.command()
+@click.option(
+    "-c", "--config", "config_path",
+    type=click.Path(),
+    default="config/default.yaml",
+    help="Path to configuration file (created/updated by the Config screen)",
+)
+@click.option(
+    "-o", "--output",
+    type=click.Path(),
+    default="output",
+    help="Output directory (default: output/)",
+)
+def tui(config_path: str, output: str) -> None:
+    """Launch the interactive console UI."""
+    cfg = load_config(config_path)
+    app = TtsApp(config=cfg, config_path=config_path, output_dir=output)
+    app.run()
 
 
 @cli.command()
