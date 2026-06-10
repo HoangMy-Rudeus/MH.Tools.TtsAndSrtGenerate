@@ -8,6 +8,7 @@ from textual.app import App
 
 from ..models.config import Config
 from .history_store import HistoryStore
+from .player import AudioPlayer, FfplayPlayer
 from .runner import GenerationRunner, PipelineRunner
 from .screens.config import ConfigScreen
 from .screens.history import HistoryScreen
@@ -33,6 +34,7 @@ class TtsApp(App):
         output_dir: str | Path,
         runner: Optional[GenerationRunner] = None,
         history_store: Optional[HistoryStore] = None,
+        player: Optional[AudioPlayer] = None,
     ):
         super().__init__()
         output_dir = Path(output_dir)
@@ -42,6 +44,7 @@ class TtsApp(App):
             output_dir=output_dir,
             history=history_store or HistoryStore(output_dir / "history.json"),
             runner=runner or PipelineRunner(),
+            player=player or FfplayPlayer(),
         )
 
     def on_mount(self) -> None:

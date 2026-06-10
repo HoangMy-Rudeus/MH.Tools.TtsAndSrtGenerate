@@ -6,6 +6,7 @@ from pathlib import Path
 from ..models.config import Config
 from .history_store import HistoryStore
 from .models import QueueItem
+from .player import AudioPlayer, FfplayPlayer
 from .runner import GenerationRunner, PipelineRunner
 
 
@@ -18,4 +19,5 @@ class AppState:
     output_dir: Path
     history: HistoryStore
     runner: GenerationRunner = field(default_factory=PipelineRunner)
+    player: AudioPlayer = field(default_factory=FfplayPlayer)
     queue: list[QueueItem] = field(default_factory=list)
