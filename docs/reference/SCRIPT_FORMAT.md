@@ -6,6 +6,8 @@ Complete specification for conversation script JSON files.
 
 Scripts are JSON files that define conversations for TTS generation. Each script contains metadata, conversation lines, and optional settings.
 
+> **Generating scripts with an AI/LLM?** See [`AI_JSON_INPUT.md`](AI_JSON_INPUT.md) — a HADS-format, AI-readable spec of the exact structure, supported values, speaker IDs, and validation rules.
+
 ## Schema
 
 ```json
@@ -394,9 +396,21 @@ For a script with `lesson_id: "coffee_shop_001"`:
 
 | File | Description |
 |------|-------------|
-| `coffee_shop_001.mp3` | Audio file |
+| `coffee_shop_001.mp3` | Audio file (or `.wav`, per config `audio.output_format`) |
 | `coffee_shop_001.srt` | SRT subtitles |
-| `coffee_shop_001_timeline.json` | Timeline with segments |
+| `coffee_shop_001_subtitles.json` | Subtitle array, times in **seconds** |
+| `coffee_shop_001_timeline.json` | Timeline with segments (millisecond timing + metadata) |
+
+### Subtitles JSON Format
+
+A flat array of subtitle entries with times in **seconds**:
+
+```json
+[
+  { "startTime": 0.5, "endTime": 7.436, "text": "Good morning! Welcome to Coffee House." },
+  { "startTime": 8.236, "endTime": 14.092, "text": "Hi! I'd like a medium cappuccino, please." }
+]
+```
 
 ### Timeline JSON Format
 

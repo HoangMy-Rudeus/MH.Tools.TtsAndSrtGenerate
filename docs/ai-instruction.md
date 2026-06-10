@@ -64,7 +64,16 @@ For input `conversation_001.json`, generate:
    Hello Alex, nice to meet you.
    ```
 
-3. **Timeline JSON**: `conversation_001.json`
+3. **Subtitle JSON**: `conversation_001_subtitles.json`
+   - Flat array of subtitle entries, times in **seconds**
+   ```json
+   [
+     { "startTime": 0.3, "endTime": 3.5, "text": "Hi everyone, this is Alex, our new front-end developer." },
+     { "startTime": 4.0, "endTime": 5.8, "text": "Hello Alex, nice to meet you." }
+   ]
+   ```
+
+4. **Timeline JSON**: `conversation_001_timeline.json`
    ```json
    {
      "lesson_id": "conversation_001",
@@ -88,6 +97,8 @@ For input `conversation_001.json`, generate:
      }
    }
    ```
+
+> **Full AI-readable input spec:** [`docs/reference/AI_JSON_INPUT.md`](reference/AI_JSON_INPUT.md)
 
 ---
 
