@@ -18,23 +18,29 @@
 
 | Task | Title | Status | Commit |
 |------|-------|--------|--------|
-| 1 | Add Textual dependency + scaffolding | TODO | — |
-| 2 | `Config.to_dict()` + `config_io` (YAML) | TODO | — |
-| 3 | `HistoryStore` | TODO | — |
-| 4 | Queue models + validation | TODO | — |
-| 5 | Generation runner seam | TODO | — |
-| 6 | `AppState` | TODO | — |
-| 7 | `TtsApp` shell + screen switching + ffmpeg check | TODO | — |
-| 8 | Queue screen (add/run/progress) | TODO | — |
+| 1 | Add Textual dependency + scaffolding | DONE | `6302cc5` |
+| 2 | `Config.to_dict()` + `config_io` (YAML) | DONE | `2b51113` |
+| 3 | `HistoryStore` | DONE | `77ccb57` |
+| 4 | Queue models + validation | DONE | `2876624` |
+| 5 | Generation runner seam | DONE | `155abf1` |
+| 6 | `AppState` | DONE | `f8b516b` |
+| 7 | `TtsApp` shell + screen switching + ffmpeg check | DONE | `a8eb64c` |
+| 8 | Queue screen (add/run/progress) | TODO (next) | — |
 | 9 | Config screen (edit/save) | TODO | — |
 | 10 | History screen (list/view/open/re-run) | TODO | — |
 | 11 | Wire `tui` CLI command | TODO | — |
 | 12 | Final verification + README | TODO | — |
 
+**Suite status:** `python -m pytest -q` → 30 passed (as of Task 7).
+
 Legend: TODO · IN PROGRESS · DONE · BLOCKED
 
 ## Decisions / deviations from plan
-- (none yet)
+- Installed **Textual 8.2.7** (plan floor was 0.60.0). APIs used so far (App, Screen,
+  ModalScreen, DataTable, `@work(thread=True)`, `call_from_thread`, `run_test`/`Pilot`,
+  `notify`) are present in 8.x. Still verify `DataTable.cursor_row`/`move_cursor`/
+  `RowHighlighted` in Tasks 8 & 10.
+- **pytest-asyncio 1.4.0** installed; `pytest.ini` sets `asyncio_mode = auto`.
 
 ## Environment notes
 - ffmpeg installed via winget but **not on PATH**; bin dir:
