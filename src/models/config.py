@@ -124,3 +124,29 @@ class Config:
             audio=audio,
             synthesis=synthesis,
         )
+
+    def to_dict(self) -> dict:
+        """Serialize to a plain dict matching the from_dict / YAML structure."""
+        return {
+            "engine": self.engine,
+            "edge": {
+                "default_voice": self.edge.default_voice,
+                "voices": dict(self.edge.voices),
+            },
+            "kokoro": {
+                "model_path": self.kokoro.model_path,
+                "voices_path": self.kokoro.voices_path,
+                "default_voice": self.kokoro.default_voice,
+                "voices": dict(self.kokoro.voices),
+            },
+            "audio": {
+                "sample_rate": self.audio.sample_rate,
+                "normalize_to": self.audio.normalize_to,
+                "output_format": self.audio.output_format,
+            },
+            "synthesis": {
+                "default_pause_ms": self.synthesis.default_pause_ms,
+                "initial_silence_ms": self.synthesis.initial_silence_ms,
+                "max_retries": self.synthesis.max_retries,
+            },
+        }
