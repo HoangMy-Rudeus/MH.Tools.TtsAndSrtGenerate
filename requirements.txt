@@ -3,6 +3,7 @@ audioop-lts>=0.2.1; python_version >= "3.13"  # audioop compatibility for Python
 pydub>=0.25.0          # Audio processing
 pyyaml>=6.0            # Config parsing
 click>=8.0             # CLI framework
+textual>=0.60.0        # Console UI (TUI) framework
 soundfile>=0.12.0      # Audio file I/O
 numpy>=1.24.0          # Array operations
 
