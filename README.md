@@ -76,6 +76,8 @@ python main.py init-config -o config/my-config.yaml
 
 ## Script Format
 
+> **Generating scripts with an AI/LLM?** See [`docs/reference/AI_JSON_INPUT.md`](docs/reference/AI_JSON_INPUT.md) — an AI-readable spec of the exact input structure, supported values, speaker IDs, and validation rules. Full human reference: [`docs/reference/SCRIPT_FORMAT.md`](docs/reference/SCRIPT_FORMAT.md).
+
 Input scripts are JSON files with conversation lines:
 
 ```json
@@ -122,9 +124,10 @@ Input scripts are JSON files with conversation lines:
 
 For input `conversation_001.json`, generates:
 
-1. **Audio**: `conversation_001.mp3` - All lines concatenated with pauses
-2. **Subtitles**: `conversation_001.srt` - SRT file with timestamps
-3. **Timeline**: `conversation_001_timeline.json` - Detailed timing information
+1. **Audio**: `conversation_001.mp3` (or `.wav`) - All lines concatenated with pauses
+2. **SRT subtitles**: `conversation_001.srt` - SRT file with timestamps
+3. **Subtitles JSON**: `conversation_001_subtitles.json` - `[{ startTime, endTime, text }]`, times in seconds
+4. **Timeline**: `conversation_001_timeline.json` - Detailed timing information (milliseconds + metadata)
 
 ## Voice Mappings
 
