@@ -8,6 +8,7 @@ A batch Text-to-Speech application that converts conversation scripts into synch
 - **SRT Generation**: Automatic subtitle file generation with accurate timestamps
 - **Timeline JSON**: Detailed timeline with segment information for integration
 - **Batch Processing**: Process multiple scripts in a directory
+- **Console UI (TUI)**: Interactive terminal app to queue topics, run generation with live progress, edit config, and browse run history
 - **Configurable**: YAML configuration for voices, audio settings, and more
 
 ## Installation
@@ -73,6 +74,28 @@ python main.py batch scripts/ -o output/
 ```bash
 python main.py init-config -o config/my-config.yaml
 ```
+
+## Console UI (TUI)
+
+Launch the interactive terminal app:
+
+```bash
+python main.py tui
+# optionally choose a config + output dir
+python main.py tui -c config/default.yaml -o output/
+```
+
+Screens:
+
+- **Queue** (home): press `a` to add a topic script (a file picker over `topics/`, validated on
+  select), `d` to remove, `r` to run all queued topics sequentially with a live progress bar.
+- **Config** (`c`): edit engine, audio params, synthesis params, and the speaker→voice map, then
+  save back to the YAML config (`Ctrl+S` or the Save button). Changes apply to the next run.
+- **History** (`h`): browse past runs (newest first); select one to view its input/output paths,
+  press `o` to show the output folder, or `Enter` to re-queue it. `Esc` goes back; `q` quits.
+
+> **Note:** generation needs `ffmpeg` on your `PATH` (pydub uses it to stitch/export audio). If it
+> is missing, the app shows a warning on startup and runs will fail at the stitching step.
 
 ## Script Format
 

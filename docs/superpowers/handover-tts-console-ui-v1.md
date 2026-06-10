@@ -25,13 +25,22 @@
 | 5 | Generation runner seam | DONE | `155abf1` |
 | 6 | `AppState` | DONE | `f8b516b` |
 | 7 | `TtsApp` shell + screen switching + ffmpeg check | DONE | `a8eb64c` |
-| 8 | Queue screen (add/run/progress) | TODO (next) | — |
-| 9 | Config screen (edit/save) | TODO | — |
-| 10 | History screen (list/view/open/re-run) | TODO | — |
-| 11 | Wire `tui` CLI command | TODO | — |
-| 12 | Final verification + README | TODO | — |
+| 8 | Queue screen (add/run/progress) | DONE | `ac01010` |
+| 9 | Config screen (edit/save) | DONE | `bdbaf88` |
+| 10 | History screen (list/view/open/re-run) | DONE | `a6729fb` |
+| 11 | Wire `tui` CLI command | DONE | `397aec6` |
+| 12 | Final verification + README | DONE | (this commit) |
 
-**Suite status:** `python -m pytest -q` → 30 passed (as of Task 7).
+**v1 COMPLETE.** All 12 tasks done.
+
+**Suite status:** `python -m pytest -q` → 35 passed.
+**End-to-end:** headless run of the real TUI path (Edge engine + ffmpeg) produced
+`office_intro_003_subtitles.json`, item status DONE, history recorded. Verified, then temp
+driver removed.
+
+## Next: v2
+In-TUI script Editor + audio replay (`ffplay`). Needs its own spec + plan (see the v1 design
+spec's v2 section). Branch `feature/console-ui-v1` is ready to merge to `main`.
 
 Legend: TODO · IN PROGRESS · DONE · BLOCKED
 
