@@ -1,5 +1,6 @@
 """SRT subtitle generation utilities."""
 
+import json
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -87,6 +88,42 @@ def save_srt(content: str, path: str) -> None:
 
     Args:
         content: SRT content string
+        path: Output file path
+    """
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(content)
+
+
+def generate_subtitle_json(segments: list["Segment"]) -> str:
+    """
+    Generate subtitle JSON content from segments.
+
+    Produces a flat array of {startTime, endTime, text} objects where the
+    times are expressed in seconds (e.g. 0.0, 5.5).
+
+    Args:
+        segments: List of Segment objects with timing information
+
+    Returns:
+        JSON string with subtitle data
+    """
+    data = [
+        {
+            "startTime": round(segment.start_ms / 1000.0, 3),
+            "endTime": round(segment.end_ms / 1000.0, 3),
+            "text": segment.text,
+        }
+        for segment in segments
+    ]
+    return json.dumps(data, ensure_ascii=False, indent=2)
+
+
+def save_subtitle_json(content: str, path: str) -> None:
+    """
+    Save subtitle JSON content to a file.
+
+    Args:
+        content: JSON content string
         path: Output file path
     """
     with open(path, "w", encoding="utf-8") as f:

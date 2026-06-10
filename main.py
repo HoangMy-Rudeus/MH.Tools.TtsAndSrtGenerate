@@ -108,6 +108,7 @@ def generate(
             click.echo(click.style("Generation successful!", fg="green"))
             click.echo(f"  Audio: {result.audio_file}")
             click.echo(f"  SRT: {result.srt_file}")
+            click.echo(f"  Subtitles: {result.subtitle_file}")
             click.echo(f"  Timeline: {result.timeline_file}")
             click.echo(f"  Duration: {result.duration_ms}ms ({result.duration_ms / 1000:.1f}s)")
         else:

@@ -14,7 +14,12 @@ from .models.script import Script, TimelineOutput, Metadata
 from .services.validator import ScriptValidator
 from .services.synthesizer import Synthesizer
 from .services.stitcher import AudioStitcher
-from .utils.srt import generate_srt, save_srt
+from .utils.srt import (
+    generate_srt,
+    save_srt,
+    generate_subtitle_json,
+    save_subtitle_json,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -31,6 +36,7 @@ class PipelineResult:
     srt_file: Optional[str]
     timeline_file: Optional[str]
     duration_ms: int
+    subtitle_file: Optional[str] = None
     error: Optional[str] = None
 
 
@@ -167,6 +173,7 @@ class Pipeline:
             audio_file = output_dir / f"{script.lesson_id}.{audio_ext}"
             srt_file = output_dir / f"{script.lesson_id}.srt"
             timeline_file = output_dir / f"{script.lesson_id}_timeline.json"
+            subtitle_file = output_dir / f"{script.lesson_id}_subtitles.json"
 
             # Export audio
             logger.info(f"Exporting audio: {audio_file}")
@@ -179,6 +186,11 @@ class Pipeline:
             logger.info(f"Generating SRT: {srt_file}")
             srt_content = generate_srt(stitch_result.segments)
             save_srt(srt_content, str(srt_file))
+
+            # Generate and save subtitle JSON ([{startTime, endTime, text}], seconds)
+            logger.info(f"Generating subtitles: {subtitle_file}")
+            subtitle_content = generate_subtitle_json(stitch_result.segments)
+            save_subtitle_json(subtitle_content, str(subtitle_file))
 
             # Generate timeline JSON
             logger.info(f"Generating timeline: {timeline_file}")
@@ -208,6 +220,7 @@ class Pipeline:
                 audio_file=str(audio_file),
                 srt_file=str(srt_file),
                 timeline_file=str(timeline_file),
+                subtitle_file=str(subtitle_file),
                 duration_ms=stitch_result.total_duration_ms,
             )
 

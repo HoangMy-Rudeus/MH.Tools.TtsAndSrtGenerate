@@ -1,8 +1,10 @@
 """Tests for SRT generation."""
 
+import json
+
 import pytest
 from src.models.script import Segment
-from src.utils.srt import ms_to_srt_time, generate_srt
+from src.utils.srt import ms_to_srt_time, generate_srt, generate_subtitle_json
 
 
 def test_ms_to_srt_time_zero():
@@ -95,3 +97,38 @@ def test_generate_srt_multiple():
     assert "2\n" in result
     assert "00:00:02,000 --> 00:00:03,500" in result
     assert "Hi there!" in result
+
+
+def test_generate_subtitle_json_empty():
+    """Test subtitle JSON generation for empty segments."""
+    result = json.loads(generate_subtitle_json([]))
+    assert result == []
+
+
+def test_generate_subtitle_json_seconds():
+    """Test subtitle JSON converts millisecond timing to seconds."""
+    segments = [
+        Segment(
+            id=1,
+            speaker="female_us_1",
+            text="Hello, welcome to this lesson.",
+            start_ms=0,
+            end_ms=5500,
+            audio_duration_ms=5500,
+        ),
+        Segment(
+            id=2,
+            speaker="male_us_1",
+            text="Today we learn vocabulary.",
+            start_ms=6000,
+            end_ms=12000,
+            audio_duration_ms=6000,
+        ),
+    ]
+
+    result = json.loads(generate_subtitle_json(segments))
+
+    assert result == [
+        {"startTime": 0.0, "endTime": 5.5, "text": "Hello, welcome to this lesson."},
+        {"startTime": 6.0, "endTime": 12.0, "text": "Today we learn vocabulary."},
+    ]

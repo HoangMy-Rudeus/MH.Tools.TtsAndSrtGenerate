@@ -39,8 +39,8 @@ output/
 *.srt
 *_timeline.json
 
-# Models (download separately)
-models/
+# Models (download separately) - anchored to repo root so src/models/ is tracked
+/models/
 *.onnx
 *.bin
 
