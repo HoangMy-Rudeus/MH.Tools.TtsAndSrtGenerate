@@ -18,6 +18,8 @@ class HistoryScreen(Screen):
         ("escape", "app.pop_screen", "Back"),
         ("o", "open_outputs", "Show outputs"),
         ("enter", "rerun", "Re-run"),
+        ("p", "play", "Play"),
+        ("s", "stop", "Stop"),
     ]
 
     def compose(self) -> ComposeResult:
@@ -87,3 +89,16 @@ class HistoryScreen(Screen):
         self.query_one("#history-detail", Static).update(
             f"Re-queued {rec.lesson_id}. Go to Queue (esc) and press 'r' to run."
         )
+
+    def action_play(self) -> None:
+        rec = self._selected()
+        if rec is None or not rec.audio_file:
+            return
+        self.app.state.player.play(rec.audio_file)
+        self.query_one("#history-detail", Static).update(f"Playing {rec.audio_file} …")
+
+    def action_stop(self) -> None:
+        self.app.state.player.stop()
+
+    def on_unmount(self) -> None:
+        self.app.state.player.stop()
