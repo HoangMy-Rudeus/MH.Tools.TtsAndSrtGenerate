@@ -3,10 +3,13 @@
 from pathlib import Path
 from typing import Callable, Optional
 
+import customtkinter as ctk
+
 from ...models.script import Script, ScriptLine, ScriptSettings
 from ...services.validator import ScriptValidator, ValidationError
 from ...tui.script_io import save_script
 from ..state import AppState
+from ..widgets.line_form import LineFormDialog, SPEAKERS
 
 EMOTIONS = ["neutral", "friendly", "cheerful", "serious", "excited"]
 
@@ -63,13 +66,8 @@ class EditorPanelLogic:
         return True, f"Saved {path}"
 
 
-class EditorPanel:
-    """Two-column script editor: metadata + line list | line form.
-
-    The Tk/CTk rendering is a separate concern; import customtkinter lazily
-    so this module can be imported in headless test environments without a
-    display.
-    """
+class EditorPanel(ctk.CTkFrame):
+    """Two-column script editor: metadata + line list | line form."""
 
     def __init__(
         self,
@@ -78,16 +76,10 @@ class EditorPanel:
         on_save: Optional[Callable[[], None]] = None,
         **kwargs,
     ):
-        import customtkinter as ctk
-        from ..widgets.line_form import LineFormDialog, SPEAKERS
-
-        ctk.CTkFrame.__init__(self, master, **kwargs)
+        super().__init__(master, **kwargs)
         self.logic = EditorPanelLogic(state)
         self._on_save = on_save or (lambda: None)
         self._selected: Optional[int] = None
-        self._LineFormDialog = LineFormDialog
-        self._SPEAKERS = SPEAKERS
-        self._ctk = ctk
 
         # ── Left column ──────────────────────────────────────────
         left = ctk.CTkFrame(self)
@@ -113,9 +105,9 @@ class EditorPanel:
         for text, cmd in [
             ("Add",      self._add_line),
             ("Delete",   self._delete_line),
-            ("Up",       self._move_up),
-            ("Down",     self._move_down),
-            ("Save",     self._save),
+            ("▲ Up",     self._move_up),
+            ("▼ Down",   self._move_down),
+            ("💾 Save",  self._save),
         ]:
             ctk.CTkButton(btn_row, text=text, command=cmd, width=80).pack(
                 side="left", padx=2
@@ -139,27 +131,25 @@ class EditorPanel:
     # ── private ───────────────────────────────────────────────────
 
     def _refresh_lines(self) -> None:
-        ctk = self._ctk
         for w in self._line_scroll.winfo_children():
             w.destroy()
         for i, line in enumerate(self.logic.lines):
-            preview = line.text[:35] + ("..." if len(line.text) > 35 else "")
+            preview = line.text[:35] + ("…" if len(line.text) > 35 else "")
             row = ctk.CTkFrame(self._line_scroll)
             row.pack(fill="x", pady=1)
             ctk.CTkLabel(row, text=f"{line.id}", width=30).pack(side="left")
             ctk.CTkLabel(row, text=line.speaker, width=110, anchor="w").pack(side="left")
             ctk.CTkLabel(row, text=preview, anchor="w").pack(side="left", fill="x", expand=True)
-            idx = i
-            row.bind("<Button-1>", lambda e, n=idx: self._select(n))
+            row.bind("<Button-1>", lambda e, n=i: self._select(n))
             for child in row.winfo_children():
-                child.bind("<Button-1>", lambda e, n=idx: self._select(n))
+                child.bind("<Button-1>", lambda e, n=i: self._select(n))
 
     def _select(self, index: int) -> None:
         self._selected = index
 
     def _add_line(self) -> None:
-        new = ScriptLine(id=self.logic._next_id(), speaker=self._SPEAKERS[0], text="")
-        dlg = self._LineFormDialog(self, new)
+        new = ScriptLine(id=self.logic._next_id(), speaker=SPEAKERS[0], text="")
+        dlg = LineFormDialog(self, new)
         self.wait_window(dlg)
         if dlg.result:
             self.logic.lines.append(dlg.result)
