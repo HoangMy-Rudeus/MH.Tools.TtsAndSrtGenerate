@@ -15,6 +15,7 @@ from src.pipeline import Pipeline
 from src.services.validator import ScriptValidator, ValidationError
 from src.tui.app import TtsApp
 from src.tui.config_io import load_config
+from src.gui.app import TtsGuiApp
 
 
 # Configure logging
@@ -141,6 +142,26 @@ def tui(config_path: str, output: str) -> None:
     cfg = load_config(config_path)
     app = TtsApp(config=cfg, config_path=config_path, output_dir=output)
     app.run()
+
+
+@cli.command()
+@click.option(
+    "-c", "--config", "config_path",
+    type=click.Path(),
+    default="config/default.yaml",
+    help="Path to configuration file",
+)
+@click.option(
+    "-o", "--output",
+    type=click.Path(),
+    default="output",
+    help="Output directory (default: output/)",
+)
+def gui(config_path: str, output: str) -> None:
+    """Launch the desktop GUI."""
+    cfg = load_config(config_path)
+    app = TtsGuiApp(config=cfg, config_path=config_path, output_dir=output)
+    app.mainloop()
 
 
 @cli.command()
