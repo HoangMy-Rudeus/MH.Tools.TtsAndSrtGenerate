@@ -4,7 +4,7 @@ Welcome to the TTS & SRT Generator documentation!
 
 ## Overview
 
-**TTS & SRT Generator** is a Python application for converting conversation scripts into synchronized audio and subtitle files, designed for English learning applications. It offers both a **command line** and an interactive **console UI (TUI)**.
+**TTS & SRT Generator** is a Python application for converting conversation scripts into synchronized audio and subtitle files, designed for English learning applications. It offers a **command line**, an interactive **console UI (TUI)**, and a **desktop GUI**.
 
 > 📘 **New here? Start with the [User Manual](USER_MANUAL.md)** — setup, CLI + console UI usage,
 > writing scripts, configuration, and troubleshooting in one place.
@@ -13,9 +13,11 @@ Welcome to the TTS & SRT Generator documentation!
 
 - TTS engines: **Edge** (cloud, free) and **Kokoro-ONNX** (local).
 - Outputs per script: `.mp3`/`.wav`, `.srt`, `_subtitles.json` (seconds-based), `_timeline.json`.
-- **Console UI (TUI)** with Queue, Editor, Config, and History (incl. audio replay) screens —
+- **Desktop GUI** with Queue, Library, Editor, Config, History, and Voices panels —
+  launch via `python main.py gui`.
+- **Console UI (TUI)** with Queue, Editor, Config, and History screens —
   launch via `python main.py tui`.
-- CLI commands: `generate`, `batch`, `validate`, `voices`, `init-config`, `tui`.
+- CLI commands: `generate`, `batch`, `validate`, `voices`, `init-config`, `tui`, `gui`.
 
 ## Documentation Structure
 
@@ -38,6 +40,7 @@ This documentation follows the **[Diátaxis framework](https://diataxis.fr/)**, 
 *Practical guides for specific tasks*
 
 - [Installation Guide](how-to/INSTALLATION.md) - Detailed installation options
+- [Using the Desktop GUI](how-to/USING_THE_GUI.md) - Launch, navigate, and use the desktop app
 - [Using the Console UI (TUI)](how-to/USING_THE_TUI.md) - Launch, navigate, and use the TUI
 - [Creating Scripts](how-to/CREATING_SCRIPTS.md) - Write conversation scripts
 - [Custom Voices](how-to/CUSTOM_VOICES.md) - Configure voice mappings

@@ -10,7 +10,8 @@ A batch Text-to-Speech application that converts conversation scripts into synch
 - **SRT Generation**: Automatic subtitle file generation with accurate timestamps
 - **Timeline JSON**: Detailed timeline with segment information for integration
 - **Batch Processing**: Process multiple scripts in a directory
-- **Console UI (TUI)**: Interactive terminal app to queue topics, run generation with live progress, edit config, and browse run history
+- **Desktop GUI**: Full customtkinter desktop app with Script Library, Voice Browser, embedded audio player, and Dark/Light/System theme switching (`python main.py gui`)
+- **Console UI (TUI)**: Interactive terminal app to queue topics, run generation with live progress, edit config, and browse run history (`python main.py tui`)
 - **Configurable**: YAML configuration for voices, audio settings, and more
 
 ## Installation
@@ -77,6 +78,31 @@ python main.py batch scripts/ -o output/
 python main.py init-config -o config/my-config.yaml
 ```
 
+## Desktop GUI
+
+Launch the customtkinter desktop application:
+
+```bash
+python main.py gui
+# optionally choose a config + output dir
+python main.py gui -c config/default.yaml -o output/
+```
+
+Six panels accessible from a 200 px sidebar:
+
+- **Queue**: add topic scripts, watch live progress bars, run all queued items.
+- **Library**: browse `topics/`, preview scripts, open in Editor, duplicate, or delete.
+- **Editor**: author scripts line by line — set metadata, add/edit/reorder lines via a modal form, save to `topics/<lesson_id>.json`.
+- **Config**: edit engine, audio, synthesis settings, and the speaker→voice map; save back to YAML.
+- **History**: browse past runs, replay audio with the embedded player, re-queue a script.
+- **Voices**: list Edge (cloud) or Kokoro (local) voices, preview synthesis, copy voice names.
+
+The **☀ Theme** button at the bottom of the sidebar cycles Dark → Light → System.
+
+Full guide: [docs/how-to/USING_THE_GUI.md](docs/how-to/USING_THE_GUI.md)
+
+> **Note:** generation and audio playback require `ffmpeg`/`ffplay` on your `PATH`. The app shows a warning banner on startup if they are missing.
+
 ## Console UI (TUI)
 
 Launch the interactive terminal app:
@@ -100,6 +126,8 @@ Screens:
 - **History** (`h`): browse past runs (newest first); select one to view its input/output paths,
   press `o` to show the output folder, `p` to replay the audio (`s` to stop), or `Enter` to
   re-queue it. `Esc` goes back; `q` quits.
+
+Full guide: [docs/how-to/USING_THE_TUI.md](docs/how-to/USING_THE_TUI.md)
 
 > **Note:** generation needs `ffmpeg` on your `PATH` (pydub uses it to stitch/export audio). If it
 > is missing, the app shows a warning on startup and runs will fail at the stitching step.
@@ -238,6 +266,11 @@ tts-generator/
 │   │   ├── models.py       # QueueItem + build_queue_item
 │   │   ├── script_io.py    # Script serialization + save
 │   │   └── screens/        # queue, config, history, editor
+│   ├── gui/
+│   │   ├── app.py          # TtsGuiApp (customtkinter entry point)
+│   │   ├── state.py        # AppState (shared across panels)
+│   │   ├── panels/         # queue, library, editor, config, history, voices
+│   │   └── widgets/        # AudioPlayerWidget, LineFormDialog
 │   └── pipeline.py         # Main pipeline
 ├── requirements.txt
 └── tests/
