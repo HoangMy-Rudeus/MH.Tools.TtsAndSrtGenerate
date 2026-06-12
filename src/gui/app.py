@@ -47,7 +47,7 @@ class TtsGuiApp(ctk.CTk):
         self.title("TTS & SRT Generator")
         self._restore_geometry()
 
-        self.state = AppState(
+        self.app_state = AppState(
             config=config,
             config_path=Path(config_path),
             output_dir=Path(output_dir),
@@ -99,20 +99,20 @@ class TtsGuiApp(ctk.CTk):
 
         # ── Panels ───────────────────────────────────────────────
         self._library = LibraryPanel(
-            self._content, self.state,
+            self._content, self.app_state,
             open_in_editor=self._open_in_editor,
         )
         self._editor = EditorPanel(
-            self._content, self.state,
+            self._content, self.app_state,
             on_save=self._library.refresh,
         )
         self._panels: dict[str, ctk.CTkFrame] = {
-            "queue":   QueuePanel(self._content, self.state, self.show_panel),
+            "queue":   QueuePanel(self._content, self.app_state, self.show_panel),
             "library": self._library,
             "editor":  self._editor,
-            "config":  ConfigPanel(self._content, self.state),
-            "history": HistoryPanel(self._content, self.state, self.show_panel),
-            "voices":  VoiceBrowserPanel(self._content, self.state),
+            "config":  ConfigPanel(self._content, self.app_state),
+            "history": HistoryPanel(self._content, self.app_state, self.show_panel),
+            "voices":  VoiceBrowserPanel(self._content, self.app_state),
         }
 
         self.show_panel("queue")

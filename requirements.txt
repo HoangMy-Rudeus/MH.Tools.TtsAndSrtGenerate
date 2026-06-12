@@ -15,3 +15,4 @@ edge-tts>=6.1.0        # Edge TTS (cloud, free)
 # Dev/test
 pytest>=8.0
 pytest-asyncio>=0.23
+pyinstaller>=6.0.0
