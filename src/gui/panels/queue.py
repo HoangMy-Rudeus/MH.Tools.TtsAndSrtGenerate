@@ -5,6 +5,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Optional
 
+import customtkinter as ctk
+
 from ...services.validator import ValidationError
 from ...tui.history_store import HistoryRecord
 from ...tui.models import QueueItem, QueueStatus, build_queue_item
@@ -105,31 +107,90 @@ class QueuePanelLogic:
         on_done()
 
 
-class QueuePanel:
-    """
-    Queue screen: add/remove topics and run generation.
+class QueuePanel(ctk.CTkFrame):
+    """Queue screen: add/remove topics and run generation."""
 
-    This class is a thin shell around QueuePanelLogic for use in a CustomTkinter GUI.
-    It is intentionally kept import-free of customtkinter at module level so that the
-    logic module can be imported in headless test environments.
-    """
-
-    def __init__(self, master, state: AppState, switch_to: Callable[[str], None], **kwargs):
-        try:
-            import customtkinter as ctk  # noqa: PLC0415
-        except ImportError:
-            raise ImportError(
-                "customtkinter is required for QueuePanel. "
-                "Install it with: pip install customtkinter"
-            )
-
-        super().__init__()
+    def __init__(
+        self,
+        master,
+        state: AppState,
+        switch_to: Callable[[str], None],
+        **kwargs,
+    ):
+        super().__init__(master, **kwargs)
         self.logic = QueuePanelLogic(state)
         self._switch_to = switch_to
         self._selected: Optional[int] = None
 
-        # Defer full Tk widget construction to avoid errors in test environments.
-        # Widgets are built lazily when this panel is actually rendered.
-        self._master = master
-        self._ctk = ctk
-        self._kwargs = kwargs
+        # Toolbar
+        toolbar = ctk.CTkFrame(self, fg_color="transparent")
+        toolbar.pack(fill="x", padx=8, pady=(8, 4))
+        ctk.CTkButton(toolbar, text="Add Topic", command=self._add).pack(side="left", padx=4)
+        ctk.CTkButton(toolbar, text="Remove", command=self._remove).pack(side="left", padx=4)
+        ctk.CTkButton(toolbar, text="▶ Run All", command=self._run_all).pack(side="left", padx=4)
+        self._lbl_status = ctk.CTkLabel(toolbar, text="")
+        self._lbl_status.pack(side="right", padx=8)
+
+        # Scrollable item list
+        self._scroll = ctk.CTkScrollableFrame(self, label_text="Queue")
+        self._scroll.pack(fill="both", expand=True, padx=8, pady=4)
+
+        self._refresh()
+
+    def _refresh(self) -> None:
+        for w in self._scroll.winfo_children():
+            w.destroy()
+        for i, item in enumerate(self.logic.state.queue):
+            row = ctk.CTkFrame(self._scroll)
+            row.pack(fill="x", padx=4, pady=2)
+            color = _STATUS_COLOR[item.status]
+            ctk.CTkLabel(row, text=Path(item.script_path).stem, anchor="w", width=200).pack(
+                side="left", padx=6
+            )
+            ctk.CTkLabel(
+                row, text=item.status.value, width=80,
+                fg_color=color, corner_radius=4,
+            ).pack(side="left", padx=4)
+            bar = ctk.CTkProgressBar(row, width=160)
+            bar.set(item.progress)
+            bar.pack(side="left", padx=4)
+            if item.error:
+                ctk.CTkLabel(row, text=item.error, text_color="red").pack(side="left", padx=4)
+            idx = i
+            row.bind("<Button-1>", lambda e, n=idx: self._select(n))
+
+    def _select(self, index: int) -> None:
+        self._selected = index
+
+    def _add(self) -> None:
+        path = ctk.filedialog.askopenfilename(
+            title="Select a topic script",
+            filetypes=[("JSON scripts", "*.json")],
+            initialdir="topics" if Path("topics").exists() else ".",
+        )
+        if not path:
+            return
+        try:
+            self.logic.add_item(path)
+            self._refresh()
+            self._lbl_status.configure(text="")
+        except (ValidationError, ValueError, FileNotFoundError) as exc:
+            self._lbl_status.configure(text=f"Invalid: {exc}", text_color="red")
+
+    def _remove(self) -> None:
+        if self._selected is None:
+            return
+        if self.logic.remove_item(self._selected):
+            self._selected = None
+            self._refresh()
+
+    def _run_all(self) -> None:
+        try:
+            self.logic.run_all(
+                on_update=lambda: self.after(0, self._refresh),
+                on_done=lambda: self.after(
+                    0, lambda: self._lbl_status.configure(text="Done.", text_color="green")
+                ),
+            )
+        except RuntimeError:
+            pass
