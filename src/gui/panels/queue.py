@@ -156,8 +156,9 @@ class QueuePanel(ctk.CTkFrame):
             bar.pack(side="left", padx=4)
             if item.error:
                 ctk.CTkLabel(row, text=item.error, text_color="red").pack(side="left", padx=4)
-            idx = i
-            row.bind("<Button-1>", lambda e, n=idx: self._select(n))
+            row.bind("<Button-1>", lambda e, n=i: self._select(n))
+            for child in row.winfo_children():
+                child.bind("<Button-1>", lambda e, n=i: self._select(n))
 
     def _select(self, index: int) -> None:
         self._selected = index
