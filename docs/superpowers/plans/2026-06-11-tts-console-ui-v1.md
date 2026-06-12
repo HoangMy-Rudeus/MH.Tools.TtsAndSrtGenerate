@@ -1,6 +1,6 @@
-# Console UI (TUI) v1 Implementation Plan
+# Console UI (TUI) v1 Implementation Plan — ✅ COMPLETE
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Add a full-screen Textual console UI that wraps the existing TTS pipeline with a Queue (pick existing topic files), Config editor, live generation, and a History view.
 
@@ -53,7 +53,7 @@ Existing files modified: `src/models/config.py` (add `to_dict()`), `main.py` (ad
 - Create: `tests/tui/__init__.py`
 - Create: `src/tui/__init__.py`
 
-- [ ] **Step 1: Add the dependency**
+- [x] **Step 1: Add the dependency**
 
 Edit `requirements.txt`, add under "Core dependencies":
 
@@ -61,12 +61,12 @@ Edit `requirements.txt`, add under "Core dependencies":
 textual>=0.60.0        # Console UI (TUI) framework
 ```
 
-- [ ] **Step 2: Install it**
+- [x] **Step 2: Install it**
 
 Run: `python -m pip install "textual>=0.60.0"`
 Expected: installs textual and its dependency `rich`.
 
-- [ ] **Step 3: Create empty package markers**
+- [x] **Step 3: Create empty package markers**
 
 Create `src/tui/__init__.py`:
 
@@ -79,12 +79,12 @@ Create `tests/tui/__init__.py`:
 ```python
 ```
 
-- [ ] **Step 4: Verify Textual imports**
+- [x] **Step 4: Verify Textual imports**
 
 Run: `python -c "import textual; print(textual.__version__)"`
 Expected: prints a version >= 0.60.0.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add requirements.txt src/tui/__init__.py tests/tui/__init__.py
@@ -100,7 +100,7 @@ git commit -m "build: add textual dependency and tui package scaffolding"
 - Create: `src/tui/config_io.py`
 - Test: `tests/tui/test_config_io.py`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tests/tui/test_config_io.py`:
 
@@ -145,12 +145,12 @@ def test_load_missing_file_returns_defaults(tmp_path):
     assert loaded.engine == "edge"
 ```
 
-- [ ] **Step 2: Run to verify it fails**
+- [x] **Step 2: Run to verify it fails**
 
 Run: `python -m pytest tests/tui/test_config_io.py -v`
 Expected: FAIL — `ImportError` (`config_io` missing) and `Config` has no `to_dict`.
 
-- [ ] **Step 3: Add `to_dict()` to Config**
+- [x] **Step 3: Add `to_dict()` to Config**
 
 In `src/models/config.py`, add this method to the `Config` dataclass (after `from_dict`):
 
@@ -182,7 +182,7 @@ In `src/models/config.py`, add this method to the `Config` dataclass (after `fro
         }
 ```
 
-- [ ] **Step 4: Create `config_io.py`**
+- [x] **Step 4: Create `config_io.py`**
 
 Create `src/tui/config_io.py`:
 
@@ -214,12 +214,12 @@ def save_config(config: Config, path: str | Path) -> None:
         yaml.safe_dump(config.to_dict(), f, sort_keys=False, allow_unicode=True)
 ```
 
-- [ ] **Step 5: Run to verify it passes**
+- [x] **Step 5: Run to verify it passes**
 
 Run: `python -m pytest tests/tui/test_config_io.py -v`
 Expected: PASS (3 tests).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/models/config.py src/tui/config_io.py tests/tui/test_config_io.py
@@ -234,7 +234,7 @@ git commit -m "feat(tui): add Config.to_dict and YAML config load/save"
 - Create: `src/tui/history_store.py`
 - Test: `tests/tui/test_history_store.py`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tests/tui/test_history_store.py`:
 
@@ -286,12 +286,12 @@ def test_list_returns_newest_first(tmp_path):
     assert [r.lesson_id for r in listed] == ["second", "first"]
 ```
 
-- [ ] **Step 2: Run to verify it fails**
+- [x] **Step 2: Run to verify it fails**
 
 Run: `python -m pytest tests/tui/test_history_store.py -v`
 Expected: FAIL — `ImportError` (module missing).
 
-- [ ] **Step 3: Create `history_store.py`**
+- [x] **Step 3: Create `history_store.py`**
 
 Create `src/tui/history_store.py`:
 
@@ -353,12 +353,12 @@ class HistoryStore:
             json.dump([asdict(r) for r in records], f, indent=2, ensure_ascii=False)
 ```
 
-- [ ] **Step 4: Run to verify it passes**
+- [x] **Step 4: Run to verify it passes**
 
 Run: `python -m pytest tests/tui/test_history_store.py -v`
 Expected: PASS (3 tests).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/tui/history_store.py tests/tui/test_history_store.py
@@ -373,7 +373,7 @@ git commit -m "feat(tui): add HistoryStore for persisted run history"
 - Create: `src/tui/models.py`
 - Test: `tests/tui/test_models.py`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tests/tui/test_models.py`:
 
@@ -417,12 +417,12 @@ def test_build_queue_item_invalid_raises(tmp_path):
         build_queue_item(p)
 ```
 
-- [ ] **Step 2: Run to verify it fails**
+- [x] **Step 2: Run to verify it fails**
 
 Run: `python -m pytest tests/tui/test_models.py -v`
 Expected: FAIL — `ImportError` (module missing).
 
-- [ ] **Step 3: Create `models.py`**
+- [x] **Step 3: Create `models.py`**
 
 Create `src/tui/models.py`:
 
@@ -476,12 +476,12 @@ def build_queue_item(script_path: str | Path) -> QueueItem:
     )
 ```
 
-- [ ] **Step 4: Run to verify it passes**
+- [x] **Step 4: Run to verify it passes**
 
 Run: `python -m pytest tests/tui/test_models.py -v`
 Expected: PASS (2 tests).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/tui/models.py tests/tui/test_models.py
@@ -498,7 +498,7 @@ git commit -m "feat(tui): add QueueItem model and build_queue_item validation"
 
 The runner isolates the TUI from the pipeline so tests never hit the network/ffmpeg. `PipelineRunner` is the real implementation; `FakeRunner` is a test helper that lives in `runner.py` so screens can import it for headless tests.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tests/tui/test_runner.py`:
 
@@ -532,12 +532,12 @@ def test_fake_runner_can_simulate_failure(tmp_path):
     assert result.error == "boom"
 ```
 
-- [ ] **Step 2: Run to verify it fails**
+- [x] **Step 2: Run to verify it fails**
 
 Run: `python -m pytest tests/tui/test_runner.py -v`
 Expected: FAIL — `ImportError` (module missing).
 
-- [ ] **Step 3: Create `runner.py`**
+- [x] **Step 3: Create `runner.py`**
 
 Create `src/tui/runner.py`:
 
@@ -616,12 +616,12 @@ class FakeRunner:
         )
 ```
 
-- [ ] **Step 4: Run to verify it passes**
+- [x] **Step 4: Run to verify it passes**
 
 Run: `python -m pytest tests/tui/test_runner.py -v`
 Expected: PASS (2 tests).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/tui/runner.py tests/tui/test_runner.py
@@ -636,7 +636,7 @@ git commit -m "feat(tui): add generation runner seam with Pipeline + Fake implem
 - Create: `src/tui/state.py`
 - Test: covered indirectly by Task 7's app test (no standalone test — pure container).
 
-- [ ] **Step 1: Create `state.py`**
+- [x] **Step 1: Create `state.py`**
 
 Create `src/tui/state.py`:
 
@@ -664,12 +664,12 @@ class AppState:
     queue: list[QueueItem] = field(default_factory=list)
 ```
 
-- [ ] **Step 2: Verify it imports**
+- [x] **Step 2: Verify it imports**
 
 Run: `python -c "from src.tui.state import AppState; print('ok')"`
 Expected: prints `ok`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/tui/state.py
@@ -686,14 +686,14 @@ git commit -m "feat(tui): add AppState shared-state container"
 - Create placeholder screens so the app imports: see steps below.
 - Test: `tests/tui/test_app.py`
 
-- [ ] **Step 1: Create the screens package marker**
+- [x] **Step 1: Create the screens package marker**
 
 Create `src/tui/screens/__init__.py`:
 
 ```python
 ```
 
-- [ ] **Step 2: Write the failing test**
+- [x] **Step 2: Write the failing test**
 
 Create `tests/tui/test_app.py`:
 
@@ -738,7 +738,7 @@ async def test_app_switches_to_config_and_history(tmp_path):
 
 Note: this test requires `pytest-asyncio`. Add it: `python -m pip install pytest-asyncio` and create `pytest.ini` if not present (Step 3).
 
-- [ ] **Step 3: Configure pytest-asyncio**
+- [x] **Step 3: Configure pytest-asyncio**
 
 Run: `python -m pip install pytest-asyncio`
 
@@ -756,7 +756,7 @@ pytest>=8.0
 pytest-asyncio>=0.23
 ```
 
-- [ ] **Step 4: Create minimal screens so the app imports**
+- [x] **Step 4: Create minimal screens so the app imports**
 
 Create `src/tui/screens/queue.py`:
 
@@ -816,7 +816,7 @@ class HistoryScreen(Screen):
         yield Footer()
 ```
 
-- [ ] **Step 5: Create `app.py`**
+- [x] **Step 5: Create `app.py`**
 
 Create `src/tui/app.py`:
 
@@ -885,12 +885,12 @@ class TtsApp(App):
         self.push_screen(HistoryScreen())
 ```
 
-- [ ] **Step 6: Run to verify it passes**
+- [x] **Step 6: Run to verify it passes**
 
 Run: `python -m pytest tests/tui/test_app.py -v`
 Expected: PASS (2 tests). The `c`/`h` bindings push screens; `escape` pops back.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add src/tui/app.py src/tui/screens/ tests/tui/test_app.py pytest.ini requirements.txt
@@ -907,7 +907,7 @@ git commit -m "feat(tui): add TtsApp shell with screen switching and ffmpeg chec
 
 The queue uses a `DataTable` (one row per item) and runs generation in a threaded worker. An `AddTopicScreen` modal uses a `DirectoryTree` to pick a `*.json` file; selection is validated via `build_queue_item`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tests/tui/test_queue_screen.py`:
 
@@ -979,12 +979,12 @@ async def test_run_all_marks_failure_and_continues(tmp_path):
         assert app.state.history.list()[0].success is False
 ```
 
-- [ ] **Step 2: Run to verify it fails**
+- [x] **Step 2: Run to verify it fails**
 
 Run: `python -m pytest tests/tui/test_queue_screen.py -v`
 Expected: FAIL — `QueueScreen` has no `refresh_table` / no run behavior.
 
-- [ ] **Step 3: Implement the Queue screen**
+- [x] **Step 3: Implement the Queue screen**
 
 Replace `src/tui/screens/queue.py` with:
 
@@ -1177,17 +1177,17 @@ class QueueScreen(Screen):
             self.refresh_table()
 ```
 
-- [ ] **Step 4: Run to verify it passes**
+- [x] **Step 4: Run to verify it passes**
 
 Run: `python -m pytest tests/tui/test_queue_screen.py -v`
 Expected: PASS (2 tests).
 
-- [ ] **Step 5: Run the full suite**
+- [x] **Step 5: Run the full suite**
 
 Run: `python -m pytest -q`
 Expected: all tests pass (existing + new).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/tui/screens/queue.py tests/tui/test_queue_screen.py
@@ -1204,7 +1204,7 @@ git commit -m "feat(tui): implement queue screen with add-topic, run-all worker,
 
 v1 edits the scalar fields and persists via `save_config`; voice-map editing uses a simple `speaker_id=voice` per-line text area (full per-engine table + live Edge voice browser is a refinement; the editable text area keeps v1 testable and complete). Engine and output_format use `Select`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tests/tui/test_config_screen.py`:
 
@@ -1252,12 +1252,12 @@ async def test_config_save_persists_changes(tmp_path):
     assert app.state.config.synthesis.max_retries == 7
 ```
 
-- [ ] **Step 2: Run to verify it fails**
+- [x] **Step 2: Run to verify it fails**
 
 Run: `python -m pytest tests/tui/test_config_screen.py -v`
 Expected: FAIL — placeholder ConfigScreen has no inputs / no `action_save`.
 
-- [ ] **Step 3: Implement the Config screen**
+- [x] **Step 3: Implement the Config screen**
 
 Replace `src/tui/screens/config.py` with:
 
@@ -1348,12 +1348,12 @@ class ConfigScreen(Screen):
         self.query_one("#config-msg", Static).update("Saved.")
 ```
 
-- [ ] **Step 4: Run to verify it passes**
+- [x] **Step 4: Run to verify it passes**
 
 Run: `python -m pytest tests/tui/test_config_screen.py -v`
 Expected: PASS (1 test).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/tui/screens/config.py tests/tui/test_config_screen.py
@@ -1368,7 +1368,7 @@ git commit -m "feat(tui): implement config screen with save-to-YAML"
 - Modify: `src/tui/screens/history.py`
 - Test: `tests/tui/test_history_screen.py`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tests/tui/test_history_screen.py`:
 
@@ -1435,12 +1435,12 @@ async def test_history_rerun_enqueues_script(tmp_path):
 
 Note on the second test's expectation: the cursor starts at row 0 which is the newest record (`b`). Adjust the assertion to `lesson_id == "b"`'s script path. Since both fixtures use `topics/a.json` as `script_path`, the assertion on `script_path` holds regardless; if you give them distinct paths, expect the row-0 (newest) one. Keep `script_path="topics/a.json"` for both as written so the assertion is unambiguous.
 
-- [ ] **Step 2: Run to verify it fails**
+- [x] **Step 2: Run to verify it fails**
 
 Run: `python -m pytest tests/tui/test_history_screen.py -v`
 Expected: FAIL — placeholder HistoryScreen has no table/records/action_rerun.
 
-- [ ] **Step 3: Implement the History screen**
+- [x] **Step 3: Implement the History screen**
 
 Replace `src/tui/screens/history.py` with:
 
@@ -1536,14 +1536,14 @@ class HistoryScreen(Screen):
         )
 ```
 
-- [ ] **Step 4: Run to verify it passes**
+- [x] **Step 4: Run to verify it passes**
 
 Run: `python -m pytest tests/tui/test_history_screen.py -v`
 Expected: PASS (2 tests).
 
 Note: `action_rerun` calls `build_queue_item`, which reads `rec.script_path` from disk. In the test the path `topics/a.json` must exist and be valid, OR adjust the test to point `script_path` at a real fixture file created in `tmp_path`. **Before running, update `_record` in the test to write a valid script to `tmp_path` and use that path** (mirror `_write_script` from `tests/tui/test_models.py`). This keeps the re-run test hermetic.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/tui/screens/history.py tests/tui/test_history_screen.py
@@ -1557,7 +1557,7 @@ git commit -m "feat(tui): implement history screen with detail, open-outputs, re
 **Files:**
 - Modify: `main.py`
 
-- [ ] **Step 1: Add the command**
+- [x] **Step 1: Add the command**
 
 In `main.py`, after the existing imports add:
 
@@ -1589,17 +1589,17 @@ def tui(config_path: str, output: str) -> None:
     app.run()
 ```
 
-- [ ] **Step 2: Smoke-test the import path**
+- [x] **Step 2: Smoke-test the import path**
 
 Run: `python -c "import main; print('tui' in main.cli.commands)"`
 Expected: prints `True`.
 
-- [ ] **Step 3: Manual launch check (interactive — run yourself)**
+- [x] **Step 3: Manual launch check (interactive — run yourself)**
 
 Run: `python main.py tui`
 Expected: the TUI opens on the Queue screen; `a` opens the file picker over `topics/`, `c`/`h` switch to Config/History, `q` quits. If ffmpeg is not on PATH you'll see a warning toast.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add main.py
@@ -1610,16 +1610,16 @@ git commit -m "feat(tui): add 'tui' CLI command to launch the console UI"
 
 ## Task 12: Final verification
 
-- [ ] **Step 1: Run the whole suite**
+- [x] **Step 1: Run the whole suite**
 
 Run: `python -m pytest -q`
 Expected: all tests pass (existing pipeline/srt/validator tests + all `tests/tui/*`).
 
-- [ ] **Step 2: End-to-end manual run (with ffmpeg on PATH)**
+- [x] **Step 2: End-to-end manual run (with ffmpeg on PATH)**
 
 Run `python main.py tui`, add `topics/conversation_1.json`, press `enter`, watch progress complete, then open History (`h`) and confirm the run is listed with its output paths. Confirm `output/<lesson_id>_subtitles.json` exists.
 
-- [ ] **Step 3: Update docs**
+- [x] **Step 3: Update docs**
 
 Add a short "Console UI" section to `README.md` describing `python main.py tui` and the three screens. Commit:
 

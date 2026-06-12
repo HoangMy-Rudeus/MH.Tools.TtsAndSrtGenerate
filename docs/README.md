@@ -38,6 +38,7 @@ This documentation follows the **[Diátaxis framework](https://diataxis.fr/)**, 
 *Practical guides for specific tasks*
 
 - [Installation Guide](how-to/INSTALLATION.md) - Detailed installation options
+- [Using the Console UI (TUI)](how-to/USING_THE_TUI.md) - Launch, navigate, and use the TUI
 - [Creating Scripts](how-to/CREATING_SCRIPTS.md) - Write conversation scripts
 - [Custom Voices](how-to/CUSTOM_VOICES.md) - Configure voice mappings
 - [Batch Processing](how-to/BATCH_PROCESSING.md) - Process multiple scripts

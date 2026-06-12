@@ -1,6 +1,6 @@
-# Console UI (TUI) v2 Implementation Plan — Editor + Audio Replay
+# Console UI (TUI) v2 Implementation Plan — Editor + Audio Replay — ✅ COMPLETE
 
-> **For agentic workers:** REQUIRED SUB-SKILL: superpowers:executing-plans (or subagent-driven-development). Steps use `- [ ]` checkboxes.
+> **For agentic workers:** REQUIRED SUB-SKILL: superpowers:executing-plans (or subagent-driven-development). Steps use `- [x]` checkboxes.
 
 **Goal:** Add an in-TUI script Editor (per-line modal form) and audio replay (ffplay) to the existing console UI.
 
@@ -16,7 +16,7 @@
 
 **Files:** Create `src/tui/script_io.py`; Test `tests/tui/test_script_io.py`
 
-- [ ] **Step 1: Failing test**
+- [x] **Step 1: Failing test**
 
 ```python
 """Tests for script serialization."""
@@ -56,9 +56,9 @@ def test_save_script_writes_valid_loadable_file(tmp_path):
     assert len(loaded.lines) == 2
 ```
 
-- [ ] **Step 2: Run, expect fail** — `python -m pytest tests/tui/test_script_io.py -q` → ImportError.
+- [x] **Step 2: Run, expect fail** — `python -m pytest tests/tui/test_script_io.py -q` → ImportError.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 ```python
 """Serialize and save conversation scripts to JSON."""
@@ -103,8 +103,8 @@ def save_script(script: Script, path: str | Path) -> None:
         json.dump(script_to_dict(script), f, indent=2, ensure_ascii=False)
 ```
 
-- [ ] **Step 4: Run, expect pass.**
-- [ ] **Step 5: Commit** — `feat(tui): add script_io (serialize + save Script)`
+- [x] **Step 4: Run, expect pass.**
+- [x] **Step 5: Commit** — `feat(tui): add script_io (serialize + save Script)`
 
 ---
 
@@ -112,7 +112,7 @@ def save_script(script: Script, path: str | Path) -> None:
 
 **Files:** Create `src/tui/player.py`; Test `tests/tui/test_player.py`
 
-- [ ] **Step 1: Failing test**
+- [x] **Step 1: Failing test**
 
 ```python
 """Tests for the audio player seam."""
@@ -129,9 +129,9 @@ def test_fake_player_records_play_and_stop():
     assert p.stop_count == 1
 ```
 
-- [ ] **Step 2: Run, expect fail.**
+- [x] **Step 2: Run, expect fail.**
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 ```python
 """Audio replay seam — wraps ffplay so the TUI stays decoupled/testable."""
@@ -184,8 +184,8 @@ class FakePlayer:
         self.stop_count += 1
 ```
 
-- [ ] **Step 4: Run, expect pass.**
-- [ ] **Step 5: Commit** — `feat(tui): add ffplay audio player seam`
+- [x] **Step 4: Run, expect pass.**
+- [x] **Step 5: Commit** — `feat(tui): add ffplay audio player seam`
 
 ---
 
@@ -193,7 +193,7 @@ class FakePlayer:
 
 **Files:** Modify `src/tui/state.py`, `src/tui/app.py`
 
-- [ ] **Step 1: Edit `state.py`** — add import and field.
+- [x] **Step 1: Edit `state.py`** — add import and field.
 
 ```python
 from .player import AudioPlayer, FfplayPlayer
@@ -203,15 +203,15 @@ Add to `AppState` (after `runner`):
     player: AudioPlayer = field(default_factory=FfplayPlayer)
 ```
 
-- [ ] **Step 2: Edit `app.py`** — accept optional player.
+- [x] **Step 2: Edit `app.py`** — accept optional player.
 
 Add import: `from .player import AudioPlayer, FfplayPlayer`
 Add param to `__init__` signature: `player: Optional[AudioPlayer] = None,`
 In the `AppState(...)` construction add: `player=player or FfplayPlayer(),`
 
-- [ ] **Step 3: Verify import** — `python -c "from src.tui.app import TtsApp; print('ok')"`
-- [ ] **Step 4: Run full suite** — `python -m pytest -q` (should still pass; default player unused in tests).
-- [ ] **Step 5: Commit** — `feat(tui): wire AudioPlayer into AppState and TtsApp`
+- [x] **Step 3: Verify import** — `python -c "from src.tui.app import TtsApp; print('ok')"`
+- [x] **Step 4: Run full suite** — `python -m pytest -q` (should still pass; default player unused in tests).
+- [x] **Step 5: Commit** — `feat(tui): wire AudioPlayer into AppState and TtsApp`
 
 ---
 
@@ -219,7 +219,7 @@ In the `AppState(...)` construction add: `player=player or FfplayPlayer(),`
 
 **Files:** Modify `src/tui/screens/history.py`; Test add to `tests/tui/test_history_screen.py`
 
-- [ ] **Step 1: Failing test** (append to existing test file)
+- [x] **Step 1: Failing test** (append to existing test file)
 
 ```python
 @pytest.mark.asyncio
@@ -241,9 +241,9 @@ async def test_history_play_calls_player(tmp_path):
         assert player.played == ["output/x.mp3"]
 ```
 
-- [ ] **Step 2: Run, expect fail** (no `p` binding / action).
+- [x] **Step 2: Run, expect fail** (no `p` binding / action).
 
-- [ ] **Step 3: Implement** — in `history.py`:
+- [x] **Step 3: Implement** — in `history.py`:
 
 Add bindings (extend BINDINGS list):
 ```python
@@ -266,8 +266,8 @@ Add actions and stop-on-unmount:
         self.app.state.player.stop()
 ```
 
-- [ ] **Step 4: Run, expect pass** — `python -m pytest tests/tui/test_history_screen.py -q`.
-- [ ] **Step 5: Commit** — `feat(tui): add audio replay (ffplay) to history screen`
+- [x] **Step 4: Run, expect pass** — `python -m pytest tests/tui/test_history_screen.py -q`.
+- [x] **Step 5: Commit** — `feat(tui): add audio replay (ffplay) to history screen`
 
 ---
 
@@ -275,7 +275,7 @@ Add actions and stop-on-unmount:
 
 **Files:** Create `src/tui/screens/editor.py`; Test `tests/tui/test_editor_screen.py`
 
-- [ ] **Step 1: Failing test**
+- [x] **Step 1: Failing test**
 
 ```python
 """Tests for the Editor screen."""
@@ -329,9 +329,9 @@ def test_next_line_id_helper():
                                   ScriptLine(id=4, speaker="y", text="b")]) == 5
 ```
 
-- [ ] **Step 2: Run, expect fail.**
+- [x] **Step 2: Run, expect fail.**
 
-- [ ] **Step 3: Implement** `src/tui/screens/editor.py`
+- [x] **Step 3: Implement** `src/tui/screens/editor.py`
 
 ```python
 """Editor screen: author a conversation script via a per-line modal form."""
@@ -510,8 +510,8 @@ class EditorScreen(Screen):
         self.query_one("#editor-msg", Static).update(f"Saved {path}")
 ```
 
-- [ ] **Step 4: Run, expect pass** — `python -m pytest tests/tui/test_editor_screen.py -q`.
-- [ ] **Step 5: Commit** — `feat(tui): add script editor screen with per-line modal form`
+- [x] **Step 4: Run, expect pass** — `python -m pytest tests/tui/test_editor_screen.py -q`.
+- [x] **Step 5: Commit** — `feat(tui): add script editor screen with per-line modal form`
 
 ---
 
@@ -519,7 +519,7 @@ class EditorScreen(Screen):
 
 **Files:** Modify `src/tui/screens/queue.py`, `README.md`, handover doc
 
-- [ ] **Step 1: Add `e` binding to QueueScreen** — in `queue.py` BINDINGS add:
+- [x] **Step 1: Add `e` binding to QueueScreen** — in `queue.py` BINDINGS add:
 ```python
         ("e", "new_script", "Editor"),
 ```
@@ -529,7 +529,7 @@ Add action and import (`from .editor import EditorScreen` at top of file):
         self.app.push_screen(EditorScreen())
 ```
 
-- [ ] **Step 2: Headless wiring test** (append to `tests/tui/test_queue_screen.py`)
+- [x] **Step 2: Headless wiring test** (append to `tests/tui/test_queue_screen.py`)
 ```python
 @pytest.mark.asyncio
 async def test_queue_opens_editor(tmp_path):
@@ -539,13 +539,13 @@ async def test_queue_opens_editor(tmp_path):
         assert app.screen.__class__.__name__ == "EditorScreen"
 ```
 
-- [ ] **Step 3: Run full suite** — `python -m pytest -q` → all pass.
+- [x] **Step 3: Run full suite** — `python -m pytest -q` → all pass.
 
-- [ ] **Step 4: README** — under "Console UI", add Editor (`e`) and replay (`p`/`s`) to the screen list. Commit.
+- [x] **Step 4: README** — under "Console UI", add Editor (`e`) and replay (`p`/`s`) to the screen list. Commit.
 
-- [ ] **Step 5: Update handover** — mark v2 tasks DONE with commit SHAs; note suite count.
+- [x] **Step 5: Update handover** — mark v2 tasks DONE with commit SHAs; note suite count.
 
-- [ ] **Step 6: Commit** — `feat(tui): open editor from queue; document v2 in README`
+- [x] **Step 6: Commit** — `feat(tui): open editor from queue; document v2 in README`
 
 ---
 

@@ -228,6 +228,16 @@ tts-generator/
 │   ├── utils/
 │   │   ├── audio.py        # Audio processing
 │   │   └── srt.py          # SRT generation
+│   ├── tui/
+│   │   ├── app.py          # TtsApp (Textual entry point)
+│   │   ├── state.py        # AppState (shared across screens)
+│   │   ├── runner.py       # GenerationRunner seam + FakeRunner
+│   │   ├── player.py       # AudioPlayer seam + FfplayPlayer
+│   │   ├── config_io.py    # YAML config load/save
+│   │   ├── history_store.py# HistoryRecord + HistoryStore
+│   │   ├── models.py       # QueueItem + build_queue_item
+│   │   ├── script_io.py    # Script serialization + save
+│   │   └── screens/        # queue, config, history, editor
 │   └── pipeline.py         # Main pipeline
 ├── requirements.txt
 └── tests/
