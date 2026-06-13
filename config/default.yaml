@@ -40,3 +40,9 @@ synthesis:
   default_pause_ms: 400
   initial_silence_ms: 300
   max_retries: 3
+
+# Default folders used by the desktop GUI
+paths:
+  topics_dir: "topics"   # Library browse + Add-Topic dialog start folder
+  output_dir: "output"   # where audio/srt/json are written
+  import_dir: ""         # folder the "Import Folder" scanner walks (blank = use topics_dir)

@@ -36,3 +36,30 @@ def test_save_then_load_returns_equal_config(tmp_path):
 def test_load_missing_file_returns_defaults(tmp_path):
     loaded = load_config(tmp_path / "does_not_exist.yaml")
     assert loaded.engine == "edge"
+
+
+def test_paths_defaults():
+    cfg = Config()
+    assert cfg.paths.topics_dir == "topics"
+    assert cfg.paths.output_dir == "output"
+    assert cfg.paths.import_dir == ""
+
+
+def test_paths_round_trip():
+    cfg = Config()
+    cfg.paths.topics_dir = "my_topics"
+    cfg.paths.output_dir = "build/out"
+    cfg.paths.import_dir = "inbox"
+
+    rebuilt = Config.from_dict(cfg.to_dict())
+
+    assert rebuilt.paths.topics_dir == "my_topics"
+    assert rebuilt.paths.output_dir == "build/out"
+    assert rebuilt.paths.import_dir == "inbox"
+
+
+def test_paths_partial_config_falls_back_to_defaults():
+    cfg = Config.from_dict({"paths": {"topics_dir": "only_topics"}})
+    assert cfg.paths.topics_dir == "only_topics"
+    assert cfg.paths.output_dir == "output"
+    assert cfg.paths.import_dir == ""

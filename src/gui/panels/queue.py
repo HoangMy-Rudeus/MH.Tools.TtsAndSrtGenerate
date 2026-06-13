@@ -10,7 +10,9 @@ import customtkinter as ctk
 from ...services.validator import ValidationError
 from ...tui.history_store import HistoryRecord
 from ...tui.models import QueueItem, QueueStatus, build_queue_item
+from ..import_scan import mark_history_duplicates, scan_folder
 from ..state import AppState
+from ..widgets.import_picker import ImportPickerDialog
 
 _STATUS_COLOR = {
     QueueStatus.QUEUED:  ("#9ca3af", "#6b7280"),
@@ -31,6 +33,25 @@ class QueuePanelLogic:
         item = build_queue_item(path)
         self.state.queue.append(item)
         return item
+
+    def add_many(
+        self, paths: list[str]
+    ) -> tuple[list[QueueItem], list[tuple[str, str]]]:
+        """
+        Add several script files at once.
+
+        Returns ``(added_items, errors)`` where ``errors`` is a list of
+        ``(path, message)`` for files that failed validation. Valid files are
+        always enqueued even if others fail.
+        """
+        added: list[QueueItem] = []
+        errors: list[tuple[str, str]] = []
+        for path in paths:
+            try:
+                added.append(self.add_item(path))
+            except (ValidationError, ValueError, FileNotFoundError) as exc:
+                errors.append((path, str(exc)))
+        return added, errors
 
     def remove_item(self, index: int) -> bool:
         """Remove item at index if not running. Returns True on success."""
@@ -74,7 +95,7 @@ class QueuePanelLogic:
 
             result = state.runner.run(
                 script_path=item.script_path,
-                output_dir=str(state.output_dir),
+                output_dir=str(state.config.paths.output_dir),
                 config=state.config,
                 on_progress=_progress,
             )
@@ -126,6 +147,7 @@ class QueuePanel(ctk.CTkFrame):
         toolbar = ctk.CTkFrame(self, fg_color="transparent")
         toolbar.pack(fill="x", padx=8, pady=(8, 4))
         ctk.CTkButton(toolbar, text="Add Topic", command=self._add).pack(side="left", padx=4)
+        ctk.CTkButton(toolbar, text="Import Folder", command=self._import_folder).pack(side="left", padx=4)
         ctk.CTkButton(toolbar, text="Remove", command=self._remove).pack(side="left", padx=4)
         ctk.CTkButton(toolbar, text="▶ Run All", command=self._run_all).pack(side="left", padx=4)
         self._lbl_status = ctk.CTkLabel(toolbar, text="")
@@ -164,19 +186,37 @@ class QueuePanel(ctk.CTkFrame):
         self._selected = index
 
     def _add(self) -> None:
-        path = ctk.filedialog.askopenfilename(
-            title="Select a topic script",
+        topics = self.logic.state.config.paths.topics_dir
+        paths = ctk.filedialog.askopenfilenames(
+            title="Select topic scripts",
             filetypes=[("JSON scripts", "*.json")],
-            initialdir="topics" if Path("topics").exists() else ".",
+            initialdir=topics if Path(topics).exists() else ".",
         )
-        if not path:
+        if not paths:
             return
-        try:
-            self.logic.add_item(path)
-            self._refresh()
-            self._lbl_status.configure(text="")
-        except (ValidationError, ValueError, FileNotFoundError) as exc:
-            self._lbl_status.configure(text=f"Invalid: {exc}", text_color="red")
+        self._add_paths(list(paths))
+
+    def _import_folder(self) -> None:
+        paths = self.logic.state.config.paths
+        root = paths.import_dir or paths.topics_dir
+        files = scan_folder(root)
+        mark_history_duplicates(files, self.logic.state.history.load())
+        dialog = ImportPickerDialog(self, files)
+        self.wait_window(dialog)
+        if dialog.selected:
+            self._add_paths([str(p) for p in dialog.selected])
+
+    def _add_paths(self, paths: list[str]) -> None:
+        added, errors = self.logic.add_many(paths)
+        self._refresh()
+        if errors:
+            self._lbl_status.configure(
+                text=f"Added {len(added)}, {len(errors)} invalid", text_color="orange"
+            )
+        else:
+            self._lbl_status.configure(
+                text=f"Added {len(added)}", text_color="green"
+            )
 
     def _remove(self) -> None:
         if self._selected is None:

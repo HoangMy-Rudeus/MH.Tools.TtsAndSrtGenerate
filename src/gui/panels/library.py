@@ -9,6 +9,7 @@ import customtkinter as ctk
 
 from ...models.script import Script
 from ...services.validator import ScriptValidator
+from ..import_scan import scan_folder
 from ..state import AppState
 
 
@@ -19,17 +20,38 @@ class LibraryPanelLogic:
         self.topics_dir = topics_dir
 
     def load(self) -> list[tuple[Path, str, str]]:
-        """Return [(path, lesson_id, title)] sorted by filename."""
-        if not self.topics_dir.exists():
-            return []
-        result = []
-        for p in sorted(self.topics_dir.glob("*.json")):
-            try:
-                data = json.loads(p.read_text(encoding="utf-8"))
-                result.append((p, data.get("lesson_id", p.stem), data.get("title", "")))
-            except Exception:
-                pass
-        return result
+        """Return [(path, lesson_id, title)] for every valid script (root + subfolders)."""
+        return [
+            (f.path, f.lesson_id, f.title)
+            for f in scan_folder(self.topics_dir) if f.valid
+        ]
+
+    def load_grouped(self) -> list[tuple[str, list[tuple[Path, str, str]]]]:
+        """
+        Return ``[(category, [(path, lesson_id, title), ...]), ...]``.
+
+        Category is the immediate subfolder name; root-level files use ``""``.
+        Root files come first, then categories alphabetically.
+        """
+        groups: dict[str, list[tuple[Path, str, str]]] = {}
+        for f in scan_folder(self.topics_dir):
+            if not f.valid:
+                continue
+            groups.setdefault(f.category, []).append((f.path, f.lesson_id, f.title))
+        return sorted(groups.items(), key=lambda kv: (kv[0] != "", kv[0]))
+
+    def import_folder(self, src: str | Path) -> int:
+        """
+        Copy every ``.json`` script under ``src`` (2 levels) into ``topics_dir``,
+        preserving the ``<category>/file.json`` layout. Returns the number copied.
+        """
+        copied = 0
+        for f in scan_folder(src):
+            dest_dir = self.topics_dir / f.category if f.category else self.topics_dir
+            dest_dir.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(f.path, dest_dir / f.path.name)
+            copied += 1
+        return copied
 
     def duplicate(self, src: Path) -> Path:
         dst = src.parent / f"{src.stem}_copy{src.suffix}"
@@ -54,7 +76,8 @@ class LibraryPanel(ctk.CTkFrame):
         **kwargs,
     ):
         super().__init__(master, **kwargs)
-        topics_dir = Path("topics")
+        self._state = state
+        topics_dir = Path(state.config.paths.topics_dir)
         self.logic = LibraryPanelLogic(topics_dir)
         self._open_in_editor = open_in_editor
         self._items: list[tuple[Path, str, str]] = []
@@ -76,6 +99,9 @@ class LibraryPanel(ctk.CTkFrame):
         ctk.CTkButton(btn_row, text="Duplicate", command=self._duplicate).pack(
             side="left", padx=4
         )
+        ctk.CTkButton(btn_row, text="Import Folder", command=self._import_folder).pack(
+            side="left", padx=4
+        )
         ctk.CTkButton(btn_row, text="Delete", fg_color="#ef4444", hover_color="#dc2626",
                       command=self._delete).pack(side="left", padx=4)
         self._lbl_msg = ctk.CTkLabel(btn_row, text="")
@@ -87,19 +113,38 @@ class LibraryPanel(ctk.CTkFrame):
         self.refresh()
 
     def refresh(self) -> None:
-        self._items = self.logic.load()
+        grouped = self.logic.load_grouped()
+        self._items = [item for _, items in grouped for item in items]
         for w in self._left.winfo_children():
             w.destroy()
         if not self._items:
-            ctk.CTkLabel(self._left, text="topics/ not found or empty").pack(pady=8)
+            ctk.CTkLabel(
+                self._left, text=f"{self.logic.topics_dir} not found or empty"
+            ).pack(pady=8)
             return
-        for i, (path, lesson_id, title) in enumerate(self._items):
-            btn = ctk.CTkButton(
-                self._left, text=f"{lesson_id}\n{title[:20]}", anchor="w",
-                command=lambda n=i: self._select(n),
-            )
-            btn.pack(fill="x", pady=1, padx=2)
+        flat_index = 0
+        for category, items in grouped:
+            if category:
+                ctk.CTkLabel(
+                    self._left, text=category, anchor="w",
+                    font=ctk.CTkFont(weight="bold"),
+                ).pack(fill="x", pady=(8, 2), padx=4)
+            for (path, lesson_id, title) in items:
+                btn = ctk.CTkButton(
+                    self._left, text=f"{lesson_id}\n{title[:20]}", anchor="w",
+                    command=lambda n=flat_index: self._select(n),
+                )
+                btn.pack(fill="x", pady=1, padx=2)
+                flat_index += 1
         self._select(0)
+
+    def _import_folder(self) -> None:
+        src = ctk.filedialog.askdirectory(title="Select a folder of scripts to import")
+        if not src:
+            return
+        count = self.logic.import_folder(src)
+        self._lbl_msg.configure(text=f"Imported {count} file(s)", text_color="green")
+        self.refresh()
 
     def _select(self, index: int) -> None:
         self._selected = index

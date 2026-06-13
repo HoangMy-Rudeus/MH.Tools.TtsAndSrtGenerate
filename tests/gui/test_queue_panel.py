@@ -53,6 +53,36 @@ def test_add_item_raises_on_invalid(tmp_path):
         logic.add_item(str(bad))
 
 
+def test_add_many_adds_valid_and_reports_invalid(tmp_path):
+    state = _make_state(tmp_path)
+    logic = QueuePanelLogic(state)
+    good1 = _write_script(tmp_path, "good1")
+    good2 = _write_script(tmp_path, "good2")
+    bad = tmp_path / "bad.json"
+    bad.write_text(json.dumps({"lesson_id": "", "title": "", "lines": []}))
+
+    added, errors = logic.add_many([str(good1), str(good2), str(bad)])
+
+    assert len(added) == 2
+    assert len(state.queue) == 2
+    assert len(errors) == 1
+    assert errors[0][0] == str(bad)
+
+
+def test_run_uses_config_output_dir(tmp_path):
+    state = _make_state(tmp_path)
+    state.config.paths.output_dir = str(tmp_path / "custom_out")
+    logic = QueuePanelLogic(state)
+    p = _write_script(tmp_path)
+    logic.add_item(str(p))
+
+    t = logic.run_all(on_update=lambda: None, on_done=lambda: None)
+    t.join(timeout=5)
+
+    rec = state.history.list()[0]
+    assert "custom_out" in rec.audio_file
+
+
 def test_remove_queued_item(tmp_path):
     state = _make_state(tmp_path)
     logic = QueuePanelLogic(state)

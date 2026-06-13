@@ -43,6 +43,25 @@ class ConfigPanel(ctk.CTkFrame):
             e.pack(fill="x", padx=12, pady=2)
             setattr(self, attr, e)
 
+        def _folder_row(label, attr, default):
+            ctk.CTkLabel(self._form, text=label, anchor="w").pack(fill="x", padx=12, pady=(2, 0))
+            row = ctk.CTkFrame(self._form, fg_color="transparent")
+            row.pack(fill="x", padx=12, pady=2)
+            e = ctk.CTkEntry(row)
+            e.insert(0, str(default))
+            e.pack(side="left", fill="x", expand=True)
+            ctk.CTkButton(
+                row, text="Browse…", width=80,
+                command=lambda entry=e: self._browse_into(entry),
+            ).pack(side="left", padx=(4, 0))
+            setattr(self, attr, e)
+
+        # Folders
+        _lbl("Folders")
+        _folder_row("topics_dir", "_e_topics_dir", cfg.paths.topics_dir)
+        _folder_row("output_dir", "_e_output_dir", cfg.paths.output_dir)
+        _folder_row("import_dir  (blank = use topics_dir)", "_e_import_dir", cfg.paths.import_dir)
+
         # Engine
         _lbl("Engine")
         self._engine_var = ctk.StringVar(value=cfg.engine)
@@ -80,9 +99,18 @@ class ConfigPanel(ctk.CTkFrame):
             e.pack(side="left", fill="x", expand=True)
             self._voice_entries[speaker] = e
 
+    def _browse_into(self, entry: ctk.CTkEntry) -> None:
+        path = ctk.filedialog.askdirectory(title="Select folder")
+        if path:
+            entry.delete(0, "end")
+            entry.insert(0, path)
+
     def _save(self) -> None:
         cfg = self._state.config
         try:
+            cfg.paths.topics_dir = self._e_topics_dir.get().strip()
+            cfg.paths.output_dir = self._e_output_dir.get().strip()
+            cfg.paths.import_dir = self._e_import_dir.get().strip()
             cfg.engine = self._engine_var.get()
             cfg.audio.sample_rate = int(self._e_sample_rate.get())
             cfg.audio.normalize_to = float(self._e_normalize.get())

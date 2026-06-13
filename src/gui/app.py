@@ -47,6 +47,12 @@ class TtsGuiApp(ctk.CTk):
         self.title("TTS & SRT Generator")
         self._restore_geometry()
 
+        # The CLI -o arg seeds the output folder only when the config file did not
+        # override it (i.e. still at the "output" default). A configured paths.output_dir
+        # always wins, and the Config panel can change it at runtime.
+        if config.paths.output_dir == "output":
+            config.paths.output_dir = str(output_dir)
+
         self.app_state = AppState(
             config=config,
             config_path=Path(config_path),

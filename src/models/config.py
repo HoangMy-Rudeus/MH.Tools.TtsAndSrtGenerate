@@ -62,6 +62,15 @@ class SynthesisConfig:
 
 
 @dataclass
+class PathsConfig:
+    """Default folders used by the desktop GUI."""
+
+    topics_dir: str = "topics"     # Library browse + Add-Topic initial dir
+    output_dir: str = "output"     # where audio/srt/json are written
+    import_dir: str = ""           # folder the import-scanner walks (blank = use topics_dir)
+
+
+@dataclass
 class Config:
     """Top-level configuration."""
 
@@ -70,6 +79,7 @@ class Config:
     kokoro: KokoroConfig = field(default_factory=KokoroConfig)
     audio: AudioConfig = field(default_factory=AudioConfig)
     synthesis: SynthesisConfig = field(default_factory=SynthesisConfig)
+    paths: PathsConfig = field(default_factory=PathsConfig)
 
     @classmethod
     def from_dict(cls, data: dict) -> "Config":
@@ -117,12 +127,21 @@ class Config:
             max_retries=synthesis_data.get("max_retries", synthesis_defaults.max_retries),
         )
 
+        paths_data = data.get("paths", {}) or {}
+        paths_defaults = PathsConfig()
+        paths = PathsConfig(
+            topics_dir=paths_data.get("topics_dir", paths_defaults.topics_dir),
+            output_dir=paths_data.get("output_dir", paths_defaults.output_dir),
+            import_dir=paths_data.get("import_dir", paths_defaults.import_dir),
+        )
+
         return cls(
             engine=data.get("engine", "edge"),
             edge=edge,
             kokoro=kokoro,
             audio=audio,
             synthesis=synthesis,
+            paths=paths,
         )
 
     def to_dict(self) -> dict:
@@ -148,5 +167,10 @@ class Config:
                 "default_pause_ms": self.synthesis.default_pause_ms,
                 "initial_silence_ms": self.synthesis.initial_silence_ms,
                 "max_retries": self.synthesis.max_retries,
+            },
+            "paths": {
+                "topics_dir": self.paths.topics_dir,
+                "output_dir": self.paths.output_dir,
+                "import_dir": self.paths.import_dir,
             },
         }

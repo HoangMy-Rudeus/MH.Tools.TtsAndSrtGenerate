@@ -7,6 +7,7 @@ from src.gui.panels.library import LibraryPanelLogic
 
 
 def _write_script(directory, lesson_id, title="T"):
+    directory.mkdir(parents=True, exist_ok=True)
     data = {
         "lesson_id": lesson_id, "title": title,
         "lines": [{"id": 1, "speaker": "female_us_1", "text": "Hi!"}],
@@ -51,3 +52,40 @@ def test_delete_removes_file(tmp_path):
     logic = LibraryPanelLogic(topics)
     logic.delete(p)
     assert not p.exists()
+
+
+def test_load_includes_subfolder_files(tmp_path):
+    topics = tmp_path / "topics"
+    _write_script(topics, "root_one")
+    _write_script(topics / "grammar", "g1")
+    logic = LibraryPanelLogic(topics)
+    lesson_ids = {item[1] for item in logic.load()}
+    assert lesson_ids == {"root_one", "g1"}
+
+
+def test_load_grouped_two_levels(tmp_path):
+    topics = tmp_path / "topics"
+    _write_script(topics, "loose")
+    _write_script(topics / "grammar", "g1", "Grammar One")
+    _write_script(topics / "grammar", "g2", "Grammar Two")
+    logic = LibraryPanelLogic(topics)
+
+    grouped = dict((cat, [it[1] for it in items]) for cat, items in logic.load_grouped())
+
+    assert grouped[""] == ["loose"]
+    assert sorted(grouped["grammar"]) == ["g1", "g2"]
+
+
+def test_import_folder_copies_preserving_structure(tmp_path):
+    topics = tmp_path / "topics"
+    topics.mkdir()
+    src = tmp_path / "inbox"
+    _write_script(src, "loose")
+    _write_script(src / "vocab", "v1")
+    logic = LibraryPanelLogic(topics)
+
+    count = logic.import_folder(src)
+
+    assert count == 2
+    assert (topics / "loose.json").exists()
+    assert (topics / "vocab" / "v1.json").exists()
